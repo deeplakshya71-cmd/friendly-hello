@@ -195,7 +195,7 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
             </div>
 
             <div className="pointer-events-auto absolute right-[0%] bottom-[-10%] z-40 md:right-[15%]">
-              <CircularBadge onClick={onMintClick} />
+              {onMintClick ? <CircularBadge onClick={onMintClick} /> : <CircularBadge />}
             </div>
           </div>
         </div>

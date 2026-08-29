@@ -1,11 +1,11 @@
 import { AlertTriangle, Wallet } from "lucide-react";
+import { NetworkSwitcher } from "@/components/NetworkSwitcher";
 import { Button } from "@/components/ui/button";
 import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/litdex";
 
 export function Header() {
-  const { address, connect, connecting, correctNetwork, switchNetwork, hasWallet, disconnect } =
-    useWallet();
+  const { address, connect, connecting, correctNetwork, hasWallet, disconnect } = useWallet();
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-md">
@@ -18,11 +18,12 @@ export function Header() {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <NetworkSwitcher />
           {address && !correctNetwork && (
-            <Button variant="destructive" size="sm" onClick={() => void switchNetwork()}>
-              <AlertTriangle /> Switch to Base Sepolia
-            </Button>
+            <span className="flex items-center gap-1 text-xs font-semibold text-destructive">
+              <AlertTriangle className="size-3.5" /> On-chain actions need Base Sepolia
+            </span>
           )}
           {address ? (
             <Button

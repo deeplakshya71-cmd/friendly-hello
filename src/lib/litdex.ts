@@ -1,7 +1,41 @@
 import { ethers } from "ethers";
 
-export const BASE_SEPOLIA_CHAIN_ID = 84532;
-export const BASE_SEPOLIA_HEX = "0x14a34";
+export type ChainConfig = {
+  chainId: number;
+  chainIdHex: string;
+  chainName: string;
+  rpcUrls: string[];
+  nativeCurrency: { name: string; symbol: string; decimals: number };
+  blockExplorerUrls: string[];
+};
+
+export const BASE_SEPOLIA: ChainConfig = {
+  chainId: 84532,
+  chainIdHex: "0x14a34",
+  chainName: "Base Sepolia",
+  rpcUrls: ["https://sepolia.base.org"],
+  nativeCurrency: { name: "Sepolia Ether", symbol: "ETH", decimals: 18 },
+  blockExplorerUrls: ["https://sepolia.basescan.org"],
+};
+
+export const LITVM: ChainConfig = {
+  chainId: 4441,
+  chainIdHex: "0x1159",
+  chainName: "LitVM",
+  rpcUrls: ["https://liteforge.rpc.caldera.xyz/http"],
+  nativeCurrency: { name: "zkLTC", symbol: "zkLTC", decimals: 18 },
+  blockExplorerUrls: ["https://liteforge.explorer.caldera.xyz"],
+};
+
+export const KNOWN_CHAINS: ChainConfig[] = [BASE_SEPOLIA, LITVM];
+
+export function chainName(chainId: number | null): string {
+  if (chainId === null) return "Unknown";
+  return KNOWN_CHAINS.find((c) => c.chainId === chainId)?.chainName ?? `Chain ${chainId}`;
+}
+
+export const BASE_SEPOLIA_CHAIN_ID = BASE_SEPOLIA.chainId;
+export const BASE_SEPOLIA_HEX = BASE_SEPOLIA.chainIdHex;
 
 export const USDT_ADDRESS = "0x02b8b8090dFFb61dE134A9e639577E9c153Ac871";
 export const POINTS_ADDRESS = "0x904b369740813dc56dE2fc457F60F832354427e0";
