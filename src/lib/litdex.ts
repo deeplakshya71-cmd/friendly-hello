@@ -87,3 +87,44 @@ export type OwnedNft = {
   damaged: boolean;
   gamesAtMaxLevel: number;
 };
+
+type Tx = ethers.ContractTransactionResponse;
+
+export interface NftContract extends ethers.BaseContract {
+  mint(): Promise<Tx>;
+  levelUp(tokenId: bigint): Promise<Tx>;
+  promote(tokenId: bigint): Promise<Tx>;
+  repair(tokenId: bigint): Promise<Tx>;
+  transferFrom(from: string, to: string, tokenId: bigint): Promise<Tx>;
+  ownerOf(tokenId: bigint): Promise<string>;
+  balanceOf(owner: string): Promise<bigint>;
+  tokenState(tokenId: bigint): Promise<[bigint, bigint, boolean, bigint]>;
+  nextTokenId(): Promise<bigint>;
+  pointsPerLevel(level: number): Promise<bigint>;
+  commonSupplyCap(): Promise<bigint>;
+  rarityMinted(rarity: number): Promise<bigint>;
+  mintPriceUSDT(): Promise<bigint>;
+  config(key: string): Promise<bigint>;
+}
+
+export interface PointsContract extends ethers.BaseContract {
+  balance(account: string): Promise<bigint>;
+  claimed(account: string): Promise<bigint>;
+  claim(totalEarned: string, expiry: string, signature: string): Promise<Tx>;
+}
+
+export interface UsdtContract extends ethers.BaseContract {
+  approve(spender: string, amount: bigint): Promise<Tx>;
+  balanceOf(account: string): Promise<bigint>;
+  allowance(owner: string, spender: string): Promise<bigint>;
+}
+
+export function nftContract(runner: ethers.ContractRunner): NftContract {
+  return new ethers.Contract(NFT_ADDRESS, NFT_ABI, runner) as unknown as NftContract;
+}
+export function pointsContract(runner: ethers.ContractRunner): PointsContract {
+  return new ethers.Contract(POINTS_ADDRESS, POINTS_ABI, runner) as unknown as PointsContract;
+}
+export function usdtContract(runner: ethers.ContractRunner): UsdtContract {
+  return new ethers.Contract(USDT_ADDRESS, USDT_ABI, runner) as unknown as UsdtContract;
+}
