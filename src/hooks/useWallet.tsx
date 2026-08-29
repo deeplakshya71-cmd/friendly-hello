@@ -24,7 +24,7 @@ type WalletState = {
   correctNetwork: boolean;
   connect: () => Promise<void>;
   disconnect: () => void;
-  switchNetwork: () => Promise<void>;
+  switchNetwork: (target?: ChainConfig) => Promise<void>;
   getProvider: () => ethers.BrowserProvider | null;
   getSigner: () => Promise<ethers.Signer>;
 };
