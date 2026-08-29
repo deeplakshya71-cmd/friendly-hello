@@ -1,11 +1,11 @@
 import { AlertTriangle, Wallet } from "lucide-react";
+import { NetworkSwitcher } from "@/components/NetworkSwitcher";
 import { Button } from "@/components/ui/button";
 import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/litdex";
 
 export function Header() {
-  const { address, connect, connecting, correctNetwork, switchNetwork, hasWallet, disconnect } =
-    useWallet();
+  const { address, connect, connecting, correctNetwork, hasWallet, disconnect } = useWallet();
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-md">
