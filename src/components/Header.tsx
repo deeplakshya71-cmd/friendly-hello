@@ -8,18 +8,14 @@ export function Header() {
     useWallet();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border/70 bg-background/85 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
-        <div className="flex items-center gap-3">
-          <div className="grid size-9 place-items-center rounded-md bg-primary/15 font-mono text-sm font-bold text-primary">
-            LX
-          </div>
-          <div>
-            <p className="font-mono text-sm font-semibold tracking-widest text-foreground uppercase">
-              Litdex
-            </p>
-            <p className="text-xs text-muted-foreground">Base Sepolia Testnet</p>
-          </div>
+    <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
+        {/* Logo */}
+        <div className="flex items-center font-display text-lg tracking-tight uppercase">
+          <span className="rounded-md bg-primary px-2 py-1 text-primary-foreground">LIT</span>
+          <span className="ml-1 rounded-md border border-border px-2 py-1 text-foreground">
+            DEX
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -29,13 +25,22 @@ export function Header() {
             </Button>
           )}
           {address ? (
-            <Button variant="secondary" size="sm" className="font-mono" onClick={disconnect}>
+            <Button
+              size="sm"
+              onClick={disconnect}
+              className="rounded-full font-mono font-bold shadow-[0_0_20px_-4px_var(--color-primary)]"
+            >
               {truncateAddress(address)}
             </Button>
           ) : (
-            <Button size="sm" disabled={connecting} onClick={() => void connect()}>
+            <Button
+              size="sm"
+              disabled={connecting}
+              onClick={() => void connect()}
+              className="rounded-full font-bold shadow-[0_0_20px_-4px_var(--color-primary)]"
+            >
               <Wallet />
-              {connecting ? "Connecting…" : hasWallet ? "Connect Wallet" : "Install Wallet"}
+              {connecting ? "Connecting…" : hasWallet ? "Connect wallet" : "Install Wallet"}
             </Button>
           )}
         </div>
