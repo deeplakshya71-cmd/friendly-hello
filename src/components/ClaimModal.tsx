@@ -156,6 +156,8 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
 
           {error && <p className="text-sm font-semibold text-[#FF8080]">{error}</p>}
 
+          <NetworkSwitcher tone="dark" />
+
           {busy ? (
             <div className="flex w-full flex-col items-center gap-3 rounded-full bg-white/10 px-6 py-4">
               <div className="flex gap-1.5" aria-hidden="true">
@@ -180,7 +182,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
           )}
           {!correctNetwork && (
             <p className="text-center text-xs font-semibold text-[#FF8080]">
-              Switch to Base Sepolia first.
+              Claiming on-chain requires Base Sepolia.
             </p>
           )}
         </div>
