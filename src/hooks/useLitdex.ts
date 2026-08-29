@@ -5,12 +5,9 @@ import { useWallet } from "./useWallet";
 import {
   CONFIG_GAMES_REQUIRED,
   CONFIG_REPAIR_COST,
-  NFT_ABI,
-  NFT_ADDRESS,
-  POINTS_ABI,
-  POINTS_ADDRESS,
-  USDT_ABI,
-  USDT_ADDRESS,
+  nftContract,
+  pointsContract,
+  usdtContract,
   type OwnedNft,
 } from "@/lib/litdex";
 
@@ -20,25 +17,16 @@ export function readProvider() {
   return new ethers.JsonRpcProvider(READ_RPC, 84532, { staticNetwork: true });
 }
 
-export function nftRead(provider: ethers.Provider) {
-  return new ethers.Contract(NFT_ADDRESS, NFT_ABI, provider);
-}
-export function pointsRead(provider: ethers.Provider) {
-  return new ethers.Contract(POINTS_ADDRESS, POINTS_ABI, provider);
-}
-export function usdtRead(provider: ethers.Provider) {
-  return new ethers.Contract(USDT_ADDRESS, USDT_ABI, provider);
-}
+export const nftRead = () => nftContract(readProvider());
+export const pointsRead = () => pointsContract(readProvider());
+export const usdtRead = () => usdtContract(readProvider());
 
 export function useBasePoints() {
   const { address } = useWallet();
   return useQuery({
     queryKey: ["basePoints", address],
     enabled: !!address,
-    queryFn: async (): Promise<bigint> => {
-      const c = pointsRead(readProvider());
-      return (await c.balance(address)) as bigint;
-    },
+    queryFn: async (): Promise<bigint> => pointsRead().balance(address!),
     refetchInterval: 20000,
   });
 }
@@ -47,11 +35,11 @@ export function useMintInfo() {
   return useQuery({
     queryKey: ["mintInfo"],
     queryFn: async () => {
-      const c = nftRead(readProvider());
+      const c = nftRead();
       const [price, cap, minted] = await Promise.all([
-        c.mintPriceUSDT() as Promise<bigint>,
-        c.commonSupplyCap() as Promise<bigint>,
-        c.rarityMinted(0) as Promise<bigint>,
+        c.mintPriceUSDT(),
+        c.commonSupplyCap(),
+        c.rarityMinted(0),
       ]);
       return { price, cap, minted };
     },
@@ -63,10 +51,10 @@ export function useGameConfig() {
   return useQuery({
     queryKey: ["gameConfig"],
     queryFn: async () => {
-      const c = nftRead(readProvider());
+      const c = nftRead();
       const [repairCost, gamesRequired] = await Promise.all([
-        c.config(CONFIG_REPAIR_COST) as Promise<bigint>,
-        c.config(CONFIG_GAMES_REQUIRED) as Promise<bigint>,
+        c.config(CONFIG_REPAIR_COST),
+        c.config(CONFIG_GAMES_REQUIRED),
       ]);
       return { repairCost, gamesRequired };
     },
@@ -80,23 +68,24 @@ export function useOwnedNfts() {
     queryKey: ["ownedNfts", address],
     enabled: !!address,
     queryFn: async (): Promise<OwnedNft[]> => {
-      const c = nftRead(readProvider());
-      const next = (await c.nextTokenId()) as bigint;
+      const c = nftRead();
+      const next = await c.nextTokenId();
       const ids: bigint[] = [];
       for (let i = 1n; i < next; i++) ids.push(i);
 
       const owners = await Promise.all(
         ids.map(async (id) => {
           try {
-            return (await c.ownerOf(id)) as string;
+            return await c.ownerOf(id);
           } catch {
             return null;
           }
         }),
       );
-      const mine = ids.filter(
-        (_, i) => owners[i] && owners[i]!.toLowerCase() === address!.toLowerCase(),
-      );
+      const mine = ids.filter((_, i) => {
+        const owner = owners[i];
+        return !!owner && owner.toLowerCase() === address!.toLowerCase();
+      });
 
       return Promise.all(
         mine.map(async (tokenId) => {
@@ -120,10 +109,7 @@ export function useLevelCost(level: number) {
   return useQuery({
     queryKey: ["levelCost", nextLevel],
     enabled: nextLevel <= 9,
-    queryFn: async (): Promise<bigint> => {
-      const c = nftRead(readProvider());
-      return (await c.pointsPerLevel(nextLevel)) as bigint;
-    },
+    queryFn: async (): Promise<bigint> => nftRead().pointsPerLevel(nextLevel),
     staleTime: 5 * 60 * 1000,
   });
 }
