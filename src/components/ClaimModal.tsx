@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { NetworkSwitcher } from "@/components/NetworkSwitcher";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
