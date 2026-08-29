@@ -98,31 +98,44 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   const disconnect = useCallback(() => setAddress(null), []);
 
-  const switchNetwork = useCallback(async () => {
+  const switchNetwork = useCallback(async (target: ChainConfig = BASE_SEPOLIA) => {
     const eth = getEthereum();
     if (!eth) return;
     try {
       await eth.request({
         method: "wallet_switchEthereumChain",
-        params: [{ chainId: BASE_SEPOLIA_HEX }],
+        params: [{ chainId: target.chainIdHex }],
       });
     } catch (err) {
-      if ((err as { code?: number }).code === 4902) {
+      const code = (err as { code?: number; data?: { originalError?: { code?: number } } }).code;
+      const nested = (err as { data?: { originalError?: { code?: number } } }).data?.originalError
+        ?.code;
+      if (code === 4902 || nested === 4902) {
         await eth.request({
           method: "wallet_addEthereumChain",
           params: [
             {
-              chainId: BASE_SEPOLIA_HEX,
-              chainName: "Base Sepolia",
-              nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-              rpcUrls: ["https://sepolia.base.org"],
-              blockExplorerUrls: ["https://sepolia.basescan.org"],
+              chainId: target.chainIdHex,
+              chainName: target.chainName,
+              nativeCurrency: target.nativeCurrency,
+              rpcUrls: target.rpcUrls,
+              blockExplorerUrls: target.blockExplorerUrls,
             },
           ],
+        });
+        await eth.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: target.chainIdHex }],
         });
       } else {
         throw err;
       }
+    }
+    try {
+      const cid = (await eth.request({ method: "eth_chainId" })) as string;
+      setChainId(Number(cid));
+    } catch {
+      /* ignore */
     }
   }, []);
 
