@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { ethers } from "ethers";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -14,13 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRefreshAll } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
-import {
-  API_BASE,
-  POINTS_ABI,
-  POINTS_ADDRESS,
-  formatPoints,
-  parseWalletError,
-} from "@/lib/litdex";
+import { API_BASE, formatPoints, parseWalletError, pointsContract } from "@/lib/litdex";
 
 type ClaimStep = "idle" | "burning" | "signing" | "confirming";
 
@@ -84,7 +77,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
 
       setStep("signing");
       const signer = await getSigner();
-      const contract = new ethers.Contract(POINTS_ADDRESS, POINTS_ABI, signer);
+      const contract = pointsContract(signer);
       const tx = await contract.claim(body.totalEarned, body.expiry, body.signature);
       setStep("confirming");
       await tx.wait();

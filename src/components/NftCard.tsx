@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  readProvider,
   usdtRead,
   useBasePoints,
   useGameConfig,
@@ -17,16 +16,15 @@ import {
 import { useWallet } from "@/hooks/useWallet";
 import {
   MAX_LEVEL,
-  NFT_ABI,
   NFT_ADDRESS,
   RARITY_CLASS,
   RARITY_NAMES,
-  USDT_ABI,
-  USDT_ADDRESS,
   formatPoints,
   formatUsdt,
+  nftContract,
   openSeaUrl,
   parseWalletError,
+  usdtContract,
   type OwnedNft,
 } from "@/lib/litdex";
 
@@ -60,7 +58,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
     }
   }
 
-  const nftWith = (signer: ethers.Signer) => new ethers.Contract(NFT_ADDRESS, NFT_ABI, signer);
+  const nftWith = (signer: ethers.Signer) => nftContract(signer);
 
   const handleLevelUp = () =>
     run(
@@ -87,12 +85,9 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
       "Repair",
       async (signer) => {
         const cost = config?.repairCost ?? 0n;
-        const allowance = (await usdtRead(readProvider()).allowance(
-          address,
-          NFT_ADDRESS,
-        )) as bigint;
+        const allowance = await usdtRead().allowance(address!, NFT_ADDRESS);
         if (allowance < cost) {
-          const usdt = new ethers.Contract(USDT_ADDRESS, USDT_ABI, signer);
+          const usdt = usdtContract(signer);
           const approveTx = await usdt.approve(NFT_ADDRESS, cost);
           await approveTx.wait();
         }
@@ -110,7 +105,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
     return run(
       "Transfer",
       async (signer) => {
-        const tx = await nftWith(signer).transferFrom(address, recipient, nft.tokenId);
+        const tx = await nftWith(signer).transferFrom(address!, recipient, nft.tokenId);
         await tx.wait();
         setRecipient("");
       },

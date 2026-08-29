@@ -1,18 +1,16 @@
-import { ethers } from "ethers";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useMintInfo, useRefreshAll, usdtRead, readProvider } from "@/hooks/useLitdex";
+import { useMintInfo, useRefreshAll, usdtRead } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
 import {
-  NFT_ABI,
   NFT_ADDRESS,
-  USDT_ABI,
-  USDT_ADDRESS,
   formatUsdt,
+  nftContract,
   parseWalletError,
+  usdtContract,
 } from "@/lib/litdex";
 
 export function MintCard() {
@@ -27,16 +25,16 @@ export function MintCard() {
   async function handleMint() {
     if (!address || !data) return;
     try {
-      const allowance = (await usdtRead(readProvider()).allowance(address, NFT_ADDRESS)) as bigint;
+      const allowance = await usdtRead().allowance(address, NFT_ADDRESS);
       const signer = await getSigner();
       if (allowance < data.price) {
         setStatus("Approving USDT…");
-        const usdt = new ethers.Contract(USDT_ADDRESS, USDT_ABI, signer);
+        const usdt = usdtContract(signer);
         const approveTx = await usdt.approve(NFT_ADDRESS, data.price);
         await approveTx.wait();
       }
       setStatus("Minting…");
-      const nft = new ethers.Contract(NFT_ADDRESS, NFT_ABI, signer);
+      const nft = nftContract(signer);
       const tx = await nft.mint();
       await tx.wait();
       await refreshAll();
