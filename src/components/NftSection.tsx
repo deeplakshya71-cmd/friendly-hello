@@ -11,7 +11,9 @@ export function NftSection() {
 
   return (
     <section className="space-y-4">
-      <h2 className="font-mono text-xs tracking-widest text-muted-foreground uppercase">My NFTs</h2>
+      <h2 className="font-display text-2xl uppercase md:text-3xl">
+        My <span className="text-primary">NFTs</span>
+      </h2>
       {isLoading && <p className="text-sm text-muted-foreground">Scanning token IDs…</p>}
       {!isLoading && (!data || data.length === 0) && (
         <Card className="border-dashed border-border bg-card/50 p-6 text-sm text-muted-foreground">
