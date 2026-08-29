@@ -1,0 +1,35 @@
+import { useBasePoints } from "@/hooks/useLitdex";
+import { formatPoints } from "@/lib/litdex";
+
+export function LevelCard() {
+  const { data, isLoading } = useBasePoints();
+
+  return (
+    <div id="levels" className="flex scroll-mt-8 flex-col rounded-[2rem] bg-[#F4F4F2] p-6 md:p-8">
+      <h3
+        className="text-center text-xl font-black tracking-tight text-black uppercase md:text-2xl"
+        style={{ fontFamily: '"Arial Black", Impact, sans-serif' }}
+      >
+        Level up & rise
+      </h3>
+      <p className="mt-2 text-center text-sm text-black/50">
+        Spend points to grow Common to Legend.
+      </p>
+
+      <div className="mt-auto flex flex-col items-center gap-3 pt-8">
+        <div className="rounded-full bg-[#0038FF] px-6 py-3 shadow-lg">
+          <p className="font-mono text-sm font-bold text-white">
+            {isLoading ? "…" : formatPoints(data ?? 0n)}{" "}
+            <span className="text-white/70">Base pts</span>
+          </p>
+        </div>
+        <a
+          href="#champions"
+          className="w-full rounded-full bg-[#CCFF00] px-6 py-3 text-center text-sm font-bold text-black shadow-lg transition-transform hover:scale-[1.03]"
+        >
+          Level a champion
+        </a>
+      </div>
+    </div>
+  );
+}

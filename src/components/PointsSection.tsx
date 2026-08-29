@@ -1,43 +1,61 @@
+import { useQuery } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
 import { ClaimModal } from "@/components/ClaimModal";
-import { ArrowBlack1 } from "@/components/ui/hero";
-import { Button } from "@/components/ui/button";
-import { useBasePoints } from "@/hooks/useLitdex";
-import { formatPoints } from "@/lib/litdex";
+import { useWallet } from "@/hooks/useWallet";
+import { API_BASE, formatPoints } from "@/lib/litdex";
 
 export function PointsSection() {
   const [open, setOpen] = useState(false);
-  const { data, isLoading } = useBasePoints();
+  const { address } = useWallet();
+
+  const litvm = useQuery({
+    queryKey: ["litvmBalance", address],
+    enabled: !!address,
+    refetchInterval: 20000,
+    queryFn: async () => {
+      const res = await fetch(`${API_BASE}/points/balance/${address}`);
+      if (!res.ok) throw new Error("Could not load LitVM balance");
+      return (await res.json()) as { litvmAvailable: string; baseBalance: string };
+    },
+  });
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/60 p-6 backdrop-blur-sm md:p-8">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
-            Base points balance
-          </p>
-          <p className="mt-2 font-display text-6xl leading-none text-primary md:text-7xl">
-            {isLoading ? "…" : formatPoints(data ?? 0n)}
-          </p>
-          <p className="mt-3 font-mono text-xs tracking-widest text-muted-foreground uppercase">
-            Spendable on level ups
-          </p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="hidden -rotate-12 md:block" aria-hidden="true">
-            <ArrowBlack1 />
+    <div className="flex flex-col rounded-[2rem] bg-[#F4F4F2] p-6 md:p-8">
+      <h3
+        className="text-center text-xl font-black tracking-tight text-black uppercase md:text-2xl"
+        style={{ fontFamily: '"Arial Black", Impact, sans-serif' }}
+      >
+        Claim your points
+      </h3>
+      <p className="mt-2 text-center text-sm text-black/50">
+        Points earned on LitVM convert to Base.
+      </p>
+
+      <div className="mt-auto flex items-center justify-center pt-8">
+        <div className="flex items-center gap-2 rounded-full bg-[#0038FF] p-1.5 pr-2 shadow-lg">
+          <div className="rounded-full bg-white/15 px-4 py-2">
+            <p className="font-mono text-sm font-bold text-white">
+              {litvm.isLoading
+                ? "…"
+                : litvm.isError
+                  ? "—"
+                  : formatPoints(litvm.data?.litvmAvailable ?? "0")}
+            </p>
+            <p className="text-[10px] font-semibold tracking-wider text-white/70 uppercase">
+              LitVM available
+            </p>
           </div>
-          <Button
-            size="lg"
+          <button
             onClick={() => setOpen(true)}
-            className="rounded-full font-bold shadow-[0_0_24px_-6px_var(--color-primary)]"
+            className="flex items-center gap-1.5 rounded-full bg-[#CCFF00] px-5 py-2.5 text-sm font-bold text-black transition-transform hover:scale-105"
           >
-            <Sparkles /> Claim from LitVM
-          </Button>
+            <Sparkles className="size-4" /> Claim
+          </button>
         </div>
       </div>
+
       <ClaimModal open={open} onOpenChange={setOpen} />
-    </section>
+    </div>
   );
 }
