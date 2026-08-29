@@ -116,7 +116,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
   const disabled = !correctNetwork || busy !== null;
 
   return (
-    <Card className="flex flex-col gap-4 border-border bg-card p-5">
+    <Card className="flex flex-col gap-4 rounded-3xl border-border/60 bg-card/60 p-5 backdrop-blur-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-mono text-xs text-muted-foreground">Token #{nft.tokenId.toString()}</p>
