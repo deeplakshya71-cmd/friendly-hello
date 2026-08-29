@@ -18,11 +18,12 @@ export function Header() {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <NetworkSwitcher />
           {address && !correctNetwork && (
-            <Button variant="destructive" size="sm" onClick={() => void switchNetwork()}>
-              <AlertTriangle /> Switch to Base Sepolia
-            </Button>
+            <span className="flex items-center gap-1 text-xs font-semibold text-destructive">
+              <AlertTriangle className="size-3.5" /> On-chain actions need Base Sepolia
+            </span>
           )}
           {address ? (
             <Button
