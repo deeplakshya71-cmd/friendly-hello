@@ -1,24 +1,74 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Header } from "@/components/Header";
+import { MintCard } from "@/components/MintCard";
+import { NftSection } from "@/components/NftSection";
+import { PointsSection } from "@/components/PointsSection";
+import { Toaster } from "@/components/ui/sonner";
+import { WalletProvider, useWallet } from "@/hooks/useWallet";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Litdex Testnet Dashboard — Points & NFT Progression" },
+      {
+        name: "description",
+        content:
+          "Connect your wallet on Base Sepolia to claim LitVM points, mint a Litdex NFT, and level it up.",
+      },
+      { property: "og:title", content: "Litdex Testnet Dashboard" },
+      {
+        property: "og:description",
+        content:
+          "Claim LitVM points on Base Sepolia, mint Litdex NFTs, and level up, repair, promote and transfer them.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: Page,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Dashboard() {
+  const { address, correctNetwork, switchNetwork } = useWallet();
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="mx-auto max-w-5xl space-y-8 px-4 py-8">
+        <h1 className="sr-only">Litdex Testnet Dashboard</h1>
+
+        {!address ? (
+          <div className="rounded-lg border border-dashed border-border bg-card/50 p-10 text-center">
+            <p className="text-lg font-semibold">Connect your wallet to get started</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Litdex runs on Base Sepolia (chain 84532).
+            </p>
+          </div>
+        ) : (
+          <>
+            {!correctNetwork && (
+              <button
+                onClick={() => void switchNetwork()}
+                className="w-full rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-left text-sm text-destructive"
+              >
+                Wrong network — click to switch to Base Sepolia.
+              </button>
+            )}
+            <PointsSection />
+            <MintCard />
+            <NftSection />
+          </>
+        )}
+      </main>
+      <Toaster />
     </div>
+  );
+}
+
+function Page() {
+  return (
+    <WalletProvider>
+      <Dashboard />
+    </WalletProvider>
   );
 }
