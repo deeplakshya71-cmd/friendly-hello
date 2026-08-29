@@ -3,6 +3,7 @@ import { Header } from "@/components/Header";
 import { MintCard } from "@/components/MintCard";
 import { NftSection } from "@/components/NftSection";
 import { PointsSection } from "@/components/PointsSection";
+import { Component as Hero } from "@/components/ui/hero";
 import { Toaster } from "@/components/ui/sonner";
 import { WalletProvider, useWallet } from "@/hooks/useWallet";
 
@@ -34,13 +35,15 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="mx-auto max-w-5xl space-y-8 px-4 py-8">
+      <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">
         <h1 className="sr-only">Litdex Testnet Dashboard</h1>
 
+        <Hero />
+
         {!address ? (
-          <div className="rounded-lg border border-dashed border-border bg-card/50 p-10 text-center">
-            <p className="text-lg font-semibold">Connect your wallet to get started</p>
-            <p className="mt-2 text-sm text-muted-foreground">
+          <div className="rounded-3xl border border-dashed border-border bg-card/50 p-10 text-center">
+            <p className="font-display text-xl uppercase">Connect your wallet to get started</p>
+            <p className="mt-2 font-mono text-sm text-muted-foreground">
               Litdex runs on Base Sepolia (chain 84532).
             </p>
           </div>
@@ -49,7 +52,7 @@ function Dashboard() {
             {!correctNetwork && (
               <button
                 onClick={() => void switchNetwork()}
-                className="w-full rounded-md border border-destructive/50 bg-destructive/10 px-4 py-3 text-left text-sm text-destructive"
+                className="w-full rounded-2xl border border-destructive/50 bg-destructive/10 px-4 py-3 text-left text-sm text-destructive"
               >
                 Wrong network — click to switch to Base Sepolia.
               </button>
