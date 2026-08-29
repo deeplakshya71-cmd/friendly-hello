@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Header } from "@/components/Header";
+import { LevelCard } from "@/components/LevelCard";
 import { MintCard } from "@/components/MintCard";
 import { NftSection } from "@/components/NftSection";
 import { PointsSection } from "@/components/PointsSection";
@@ -10,17 +10,17 @@ import { WalletProvider, useWallet } from "@/hooks/useWallet";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Litdex Testnet Dashboard — Points & NFT Progression" },
+      { title: "Litdex Champions — Testnet Points & NFT Progression" },
       {
         name: "description",
         content:
-          "Connect your wallet on Base Sepolia to claim LitVM points, mint a Litdex NFT, and level it up.",
+          "Connect your wallet on Base Sepolia to claim LitVM points, mint a Litdex champion, and level it up to Legend.",
       },
-      { property: "og:title", content: "Litdex Testnet Dashboard" },
+      { property: "og:title", content: "Litdex Champions" },
       {
         property: "og:description",
         content:
-          "Claim LitVM points on Base Sepolia, mint Litdex NFTs, and level up, repair, promote and transfer them.",
+          "Claim LitVM points on Base Sepolia, mint Litdex champions, and level up, repair, promote and transfer them.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -30,39 +30,55 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const { address, correctNetwork, switchNetwork } = useWallet();
+  const { address, correctNetwork, switchNetwork, connect } = useWallet();
+
+  const scrollToMint = () =>
+    document.getElementById("mint")?.scrollIntoView({ behavior: "smooth", block: "center" });
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">
-        <h1 className="sr-only">Litdex Testnet Dashboard</h1>
+    <div className="min-h-screen bg-[#0038FF]">
+      <Hero onMintClick={scrollToMint} />
 
-        <Hero />
-
-        {!address ? (
-          <div className="rounded-3xl border border-dashed border-border bg-card/50 p-10 text-center">
-            <p className="font-display text-xl uppercase">Connect your wallet to get started</p>
-            <p className="mt-2 font-mono text-sm text-muted-foreground">
-              Litdex runs on Base Sepolia (chain 84532).
-            </p>
-          </div>
-        ) : (
-          <>
-            {!correctNetwork && (
-              <button
-                onClick={() => void switchNetwork()}
-                className="w-full rounded-2xl border border-destructive/50 bg-destructive/10 px-4 py-3 text-left text-sm text-destructive"
+      <section className="relative z-20 -mt-10 rounded-t-[2.5rem] bg-white px-4 py-16 md:rounded-t-[4rem]">
+        <div className="mx-auto max-w-6xl">
+          {!address ? (
+            <div className="rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-10 text-center">
+              <p
+                className="text-2xl font-black tracking-tight text-black uppercase"
+                style={{ fontFamily: '"Arial Black", Impact, sans-serif' }}
               >
-                Wrong network — click to switch to Base Sepolia.
+                Connect your wallet to get started
+              </p>
+              <p className="mt-2 text-sm text-black/50">
+                Litdex runs on Base Sepolia (chain 84532).
+              </p>
+              <button
+                onClick={() => void connect()}
+                className="mt-6 rounded-full bg-[#CCFF00] px-8 py-3 text-sm font-bold text-black shadow-lg transition-transform hover:scale-105"
+              >
+                Connect wallet
               </button>
-            )}
-            <PointsSection />
-            <MintCard />
-            <NftSection />
-          </>
-        )}
-      </main>
+            </div>
+          ) : (
+            <>
+              {!correctNetwork && (
+                <button
+                  onClick={() => void switchNetwork()}
+                  className="mb-8 w-full rounded-[2rem] border-2 border-[#FF4D4D]/40 bg-[#FF4D4D]/10 px-6 py-4 text-left text-sm font-semibold text-[#D43232]"
+                >
+                  Wrong network — click to switch to Base Sepolia.
+                </button>
+              )}
+              <div id="points" className="grid scroll-mt-24 gap-6 md:grid-cols-3">
+                <PointsSection />
+                <MintCard />
+                <LevelCard />
+              </div>
+              <NftSection />
+            </>
+          )}
+        </div>
+      </section>
       <Toaster />
     </div>
   );

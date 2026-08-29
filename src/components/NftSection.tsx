@@ -1,5 +1,4 @@
 import { NftCard } from "@/components/NftCard";
-import { Card } from "@/components/ui/card";
 import { useOwnedNfts } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
 
@@ -10,17 +9,20 @@ export function NftSection() {
   if (!address) return null;
 
   return (
-    <section className="space-y-4">
-      <h2 className="font-display text-2xl uppercase md:text-3xl">
-        My <span className="text-primary">NFTs</span>
+    <section id="champions" className="mt-16 scroll-mt-8 space-y-6">
+      <h2
+        className="text-center text-3xl font-black tracking-tight text-black uppercase md:text-4xl"
+        style={{ fontFamily: '"Arial Black", Impact, sans-serif' }}
+      >
+        My <span className="text-[#0038FF]">champions</span>
       </h2>
-      {isLoading && <p className="text-sm text-muted-foreground">Scanning token IDs…</p>}
+      {isLoading && <p className="text-center text-sm text-black/50">Scanning token IDs…</p>}
       {!isLoading && (!data || data.length === 0) && (
-        <Card className="border-dashed border-border bg-card/50 p-6 text-sm text-muted-foreground">
-          You don't own any Litdex NFTs yet. Mint one above.
-        </Card>
+        <div className="rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-8 text-center text-sm text-black/50">
+          You don't own any Litdex champions yet. Mint one above.
+        </div>
       )}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {data?.map((nft) => <NftCard key={nft.tokenId.toString()} nft={nft} />)}
       </div>
     </section>
