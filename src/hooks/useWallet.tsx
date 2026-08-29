@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { BASE_SEPOLIA_CHAIN_ID, BASE_SEPOLIA_HEX } from "@/lib/litdex";
+import { BASE_SEPOLIA, BASE_SEPOLIA_CHAIN_ID, type ChainConfig } from "@/lib/litdex";
 
 type Eip1193 = {
   request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
