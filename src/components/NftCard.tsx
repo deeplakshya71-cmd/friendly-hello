@@ -1,11 +1,7 @@
 import { ethers } from "ethers";
-import { ExternalLink, Loader2 } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   usdtRead,
   useBasePoints,
@@ -17,7 +13,6 @@ import { useWallet } from "@/hooks/useWallet";
 import {
   MAX_LEVEL,
   NFT_ADDRESS,
-  RARITY_CLASS,
   RARITY_NAMES,
   formatPoints,
   formatUsdt,
@@ -27,6 +22,40 @@ import {
   usdtContract,
   type OwnedNft,
 } from "@/lib/litdex";
+
+const RARITY_COLOR: Record<number, string> = {
+  0: "#A8A0BE",
+  1: "#4D9FFF",
+  2: "#C24DFF",
+  3: "#FFB833",
+};
+
+function PillButton({
+  children,
+  onClick,
+  disabled,
+  variant = "lime",
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  variant?: "lime" | "blue" | "ghost";
+}) {
+  const styles = {
+    lime: "bg-[#CCFF00] text-black",
+    blue: "bg-[#0038FF] text-white",
+    ghost: "border border-black/20 bg-transparent text-black",
+  }[variant];
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`w-full rounded-full px-4 py-2.5 text-sm font-bold shadow-md transition-transform hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100 ${styles}`}
+    >
+      {children}
+    </button>
+  );
+}
 
 export function NftCard({ nft }: { nft: OwnedNft }) {
   const { address, getSigner, correctNetwork } = useWallet();
@@ -114,98 +143,111 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
   };
 
   const disabled = !correctNetwork || busy !== null;
+  const rarityColor = RARITY_COLOR[nft.rarity] ?? "#A8A0BE";
 
   return (
-    <Card className="flex flex-col gap-4 rounded-3xl border-border/60 bg-card/60 p-5 backdrop-blur-sm">
+    <div className="flex flex-col gap-4 rounded-[2rem] border border-[#0038FF]/15 bg-[#0038FF]/5 p-6 shadow-xl backdrop-blur-md transition-transform duration-500 hover:-rotate-1">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-mono text-xs text-muted-foreground">Token #{nft.tokenId.toString()}</p>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <Badge className={RARITY_CLASS[nft.rarity]}>
-              {RARITY_NAMES[nft.rarity] ?? "Unknown"}
-            </Badge>
-            <Badge variant="outline" className="font-mono">
+        <div className="flex items-center gap-3">
+          <div
+            className="size-12 rounded-full border-[3px] border-white shadow-inner"
+            style={{ backgroundColor: rarityColor }}
+          />
+          <div>
+            <p className="font-mono text-xs text-black/50">#{nft.tokenId.toString()}</p>
+            <p className="font-bold text-black">
               Lv {nft.level}/{MAX_LEVEL}
-            </Badge>
-            {nft.damaged && <Badge variant="destructive">Damaged</Badge>}
+            </p>
           </div>
         </div>
-        <a
-          href={openSeaUrl(nft.tokenId)}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-        >
-          OpenSea <ExternalLink className="size-3" />
-        </a>
+        <div className="flex flex-col items-end gap-1.5">
+          <span
+            className="rounded-full px-3 py-1 text-xs font-bold text-white"
+            style={{ backgroundColor: rarityColor }}
+          >
+            {RARITY_NAMES[nft.rarity] ?? "Unknown"}
+          </span>
+          {nft.damaged && (
+            <span className="rounded-full bg-[#FF4D4D] px-3 py-1 text-xs font-bold text-white">
+              Damaged
+            </span>
+          )}
+        </div>
       </div>
 
-      <div className="space-y-2 border-t border-border pt-4">
+      <div className="space-y-2 border-t border-black/10 pt-4">
         {atMax ? (
           <>
-            <p className="text-sm text-muted-foreground">Max level — Promote instead</p>
-            <p className="font-mono text-xs text-muted-foreground">
+            <p className="text-sm text-black/60">Max level — promote instead</p>
+            <p className="font-mono text-xs text-black/50">
               {nft.gamesAtMaxLevel}/{gamesRequired?.toString() ?? "…"} games
               {promoteReady ? " — ready" : ""}
             </p>
-            <Button
-              className="w-full"
+            <PillButton
+              variant="blue"
               disabled={disabled || !promoteReady}
               onClick={() => void handlePromote()}
             >
-              {busy === "Promote" && <Loader2 className="animate-spin" />} Promote
-            </Button>
+              {busy === "Promote" ? "Promoting…" : "Promote"}
+            </PillButton>
           </>
         ) : (
           <>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-black/60">
               Level up cost:{" "}
-              <span className="font-mono text-foreground">
+              <span className="font-mono font-semibold text-black">
                 {levelCost !== undefined ? formatPoints(levelCost) : "…"} pts
               </span>
             </p>
-            <Button
-              className="w-full"
+            <PillButton
               disabled={disabled || nft.damaged || !canAfford}
               onClick={() => void handleLevelUp()}
             >
-              {busy === "Level up" && <Loader2 className="animate-spin" />} Level Up
-            </Button>
-            {nft.damaged && <p className="text-xs text-destructive">Repair before leveling up.</p>}
+              {busy === "Level up" ? "Leveling…" : "Level up"}
+            </PillButton>
+            {nft.damaged && <p className="text-xs font-semibold text-[#FF4D4D]">Repair before leveling up.</p>}
             {!nft.damaged && !canAfford && (
-              <p className="text-xs text-muted-foreground">Not enough Base points.</p>
+              <p className="text-xs text-black/50">Not enough Base points.</p>
             )}
           </>
         )}
 
         {nft.damaged && (
-          <Button
-            variant="secondary"
-            className="w-full"
-            disabled={disabled}
-            onClick={() => void handleRepair()}
-          >
-            {busy === "Repair" && <Loader2 className="animate-spin" />}
-            Repair · ${config ? formatUsdt(config.repairCost) : "…"} USDT
-          </Button>
+          <PillButton variant="blue" disabled={disabled} onClick={() => void handleRepair()}>
+            {busy === "Repair"
+              ? "Repairing…"
+              : `Repair · $${config ? formatUsdt(config.repairCost) : "…"} USDT`}
+          </PillButton>
         )}
       </div>
 
-      <div className="space-y-2 border-t border-border pt-4">
-        <p className="text-xs tracking-wide text-muted-foreground uppercase">Transfer</p>
+      <div className="space-y-2 border-t border-black/10 pt-4">
+        <p className="text-xs font-semibold tracking-wide text-black/50 uppercase">Transfer</p>
         <div className="flex gap-2">
-          <Input
+          <input
             placeholder="0x recipient"
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
-            className="font-mono text-xs"
             disabled={disabled}
+            className="w-full rounded-full border border-black/20 bg-white px-4 py-2 font-mono text-xs text-black outline-none placeholder:text-black/40 focus:border-[#0038FF]"
           />
-          <Button variant="outline" disabled={disabled} onClick={() => void handleTransfer()}>
-            {busy === "Transfer" ? <Loader2 className="animate-spin" /> : "Send"}
-          </Button>
+          <button
+            onClick={() => void handleTransfer()}
+            disabled={disabled}
+            className="shrink-0 rounded-full bg-[#CCFF00] px-4 py-2 text-xs font-bold text-black shadow-md transition-transform hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
+          >
+            {busy === "Transfer" ? "…" : "Send"}
+          </button>
         </div>
+        <a
+          href={openSeaUrl(nft.tokenId)}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-[#0038FF] hover:underline"
+        >
+          View on OpenSea <ExternalLink className="size-3" />
+        </a>
       </div>
-    </Card>
+    </div>
   );
 }

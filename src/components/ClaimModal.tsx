@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -91,24 +90,38 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
     }
   }
 
+  const stepLabel =
+    step === "burning"
+      ? "Burning on LitVM"
+      : step === "signing"
+        ? "Confirm in wallet"
+        : step === "confirming"
+          ? "Confirming on Base"
+          : null;
+
   return (
     <Dialog open={open} onOpenChange={(v) => (busy ? null : onOpenChange(v))}>
-      <DialogContent>
+      <DialogContent className="rounded-[2rem] border-white/30 bg-[#0038FF]/85 text-white shadow-2xl backdrop-blur-xl">
         <DialogHeader>
-          <DialogTitle>Claim from LitVM</DialogTitle>
-          <DialogDescription>
+          <DialogTitle
+            className="text-xl font-black tracking-tight text-[#CCFF00] uppercase"
+            style={{ fontFamily: '"Arial Black", Impact, sans-serif' }}
+          >
+            Claim from LitVM
+          </DialogTitle>
+          <DialogDescription className="text-white/70">
             Burn points on LitVM and mint them as spendable points on Base Sepolia.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="rounded-md border border-border bg-muted/40 p-3 text-sm">
-            {litvm.isLoading && <span className="text-muted-foreground">Loading LitVM balance…</span>}
-            {litvm.isError && <span className="text-destructive">Could not load LitVM balance.</span>}
+          <div className="rounded-2xl border border-white/25 bg-white/10 p-3 text-sm">
+            {litvm.isLoading && <span className="text-white/60">Loading LitVM balance…</span>}
+            {litvm.isError && <span className="text-[#FF8080]">Could not load LitVM balance.</span>}
             {litvm.data && (
               <span>
                 You have{" "}
-                <span className="font-mono font-semibold text-primary">
+                <span className="font-mono font-semibold text-[#CCFF00]">
                   {formatPoints(litvm.data.litvmAvailable)}
                 </span>{" "}
                 points on LitVM.
@@ -117,7 +130,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="claim-amount" className="text-sm text-muted-foreground">
+            <label htmlFor="claim-amount" className="text-sm text-white/70">
               Amount to convert
             </label>
             <Input
@@ -127,12 +140,12 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
               value={amount}
               disabled={busy}
               onChange={(e) => setAmount(e.target.value.replace(/[^\d]/g, ""))}
-              className="font-mono"
+              className="rounded-full border-white/25 bg-white/10 font-mono text-white placeholder:text-white/40"
             />
             {available !== null && (
               <button
                 type="button"
-                className="text-xs text-primary hover:underline"
+                className="text-xs font-semibold text-[#CCFF00] hover:underline"
                 disabled={busy}
                 onClick={() => setAmount(available.toString())}
               >
@@ -141,24 +154,34 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
             )}
           </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+          {error && <p className="text-sm font-semibold text-[#FF8080]">{error}</p>}
 
-          <Button
-            className="w-full"
-            disabled={!amountValid || busy || !correctNetwork}
-            onClick={() => void handleConvert()}
-          >
-            {busy && <Loader2 className="animate-spin" />}
-            {step === "burning"
-              ? "Burning on LitVM…"
-              : step === "signing"
-                ? "Confirm in wallet…"
-                : step === "confirming"
-                  ? "Confirming on Base…"
-                  : "Convert"}
-          </Button>
+          {busy ? (
+            <div className="flex w-full flex-col items-center gap-3 rounded-full bg-white/10 px-6 py-4">
+              <div className="flex gap-1.5" aria-hidden="true">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="size-2.5 animate-bounce rounded-full bg-[#CCFF00]"
+                    style={{ animationDelay: `${i * 150}ms` }}
+                  />
+                ))}
+              </div>
+              <p className="text-sm font-bold text-white">{stepLabel}…</p>
+            </div>
+          ) : (
+            <Button
+              className="w-full rounded-full bg-[#CCFF00] py-6 text-sm font-bold text-black shadow-lg transition-transform hover:scale-[1.02] hover:bg-[#CCFF00]"
+              disabled={!amountValid || !correctNetwork}
+              onClick={() => void handleConvert()}
+            >
+              Convert
+            </Button>
+          )}
           {!correctNetwork && (
-            <p className="text-center text-xs text-destructive">Switch to Base Sepolia first.</p>
+            <p className="text-center text-xs font-semibold text-[#FF8080]">
+              Switch to Base Sepolia first.
+            </p>
           )}
         </div>
       </DialogContent>
