@@ -89,8 +89,8 @@ export function MintCard() {
     >
       <div className="relative">
         <ImageLightbox
-          src={PASS_CARD_IMAGES[passIndex].src}
-          alt={`Litdex pass card — ${PASS_CARD_IMAGES[passIndex].label}`}
+          src={activePass?.src ?? ""}
+          alt={`Litdex pass card — ${activePass?.label ?? ""}`}
         >
           <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] border-[3px] border-white bg-black/5 shadow-xl">
             {PASS_CARD_IMAGES.map((pass, i) => (
@@ -117,7 +117,7 @@ export function MintCard() {
             />
           ))}
           <span className="ml-2 font-mono text-[11px] font-bold uppercase tracking-wide text-black/50">
-            {PASS_CARD_IMAGES[passIndex].label}
+            {activePass?.label}
           </span>
         </div>
       </div>
