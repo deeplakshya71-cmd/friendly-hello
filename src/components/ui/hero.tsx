@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
-import championCommon from "@/assets/champion-common.png";
-import championRare from "@/assets/champion-rare.png";
+import epicAsset from "@/assets/litdex-epic-home.png.asset.json";
+import legendAsset from "@/assets/litdex-legend-home.png.asset.json";
 import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/litdex";
 
@@ -45,14 +45,14 @@ const CircularBadge = ({ onClick }: { onClick?: () => void }) => (
     <div className="absolute inset-0 flex items-center justify-center">
       <svg
         viewBox="0 0 100 100"
-        className="h-10 w-10 overflow-visible stroke-current text-black"
+        className="h-9 w-9 stroke-current text-black"
         fill="none"
-        strokeWidth="8"
+        strokeWidth="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M20,20 Q 45,35 40,55 T 55,85" />
-        <path d="M30,68 L55,88 L78,64" />
+        <path d="M50,18 L50,78" />
+        <path d="M26,56 L50,80 L74,56" />
       </svg>
     </div>
   </div>
@@ -156,14 +156,14 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="pointer-events-auto absolute bottom-[10%] left-[5%] z-30 md:left-[20%]"
             >
-              <div className="flex aspect-[3/3.5] w-40 rotate-[-12deg] items-center justify-center rounded-[2rem] border border-white/40 bg-white/20 p-4 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-0 md:w-52">
+              <div className="aspect-square w-40 rotate-[-12deg] overflow-hidden rounded-[2rem] border border-white/40 bg-white/20 shadow-2xl transition-transform duration-500 hover:rotate-0 md:w-52">
                 <img
-                  src={championCommon}
-                  alt="Common tier Litdex champion"
+                  src={epicAsset.url}
+                  alt="Litdex Epic champion board pass"
                   loading="lazy"
-                  width={768}
-                  height={896}
-                  className="h-full w-full object-contain drop-shadow-lg"
+                  width={1254}
+                  height={1254}
+                  className="h-full w-full object-cover"
                 />
               </div>
             </motion.div>
@@ -173,14 +173,14 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
               className="pointer-events-auto absolute top-[34%] right-[2%] z-30 md:top-[32%] md:right-[18%]"
             >
-              <div className="flex aspect-[3/3.5] w-40 rotate-[12deg] items-center justify-center rounded-[2rem] border border-white/40 bg-white/20 p-4 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-0 md:w-52">
+              <div className="aspect-square w-40 rotate-[12deg] overflow-hidden rounded-[2rem] border border-white/40 bg-white/20 shadow-2xl transition-transform duration-500 hover:rotate-0 md:w-52">
                 <img
-                  src={championRare}
-                  alt="Rare tier Litdex champion"
+                  src={legendAsset.url}
+                  alt="Litdex Legend champion board pass"
                   loading="lazy"
-                  width={768}
-                  height={896}
-                  className="h-full w-full object-contain drop-shadow-lg"
+                  width={1254}
+                  height={1254}
+                  className="h-full w-full object-cover"
                 />
               </div>
             </motion.div>
