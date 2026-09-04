@@ -1,5 +1,24 @@
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
+
+let activeId: string | null = null;
+const listeners = new Set<(id: string | null) => void>();
+
+function setActive(id: string | null) {
+  activeId = id;
+  listeners.forEach((fn) => fn(activeId));
+}
+
+function useActiveLightbox() {
+  const [active, setActive] = useState(activeId);
+  useEffect(() => {
+    listeners.add(setActive);
+    return () => {
+      listeners.delete(setActive);
+    };
+  }, []);
+  return active;
+}
 
 export function ImageLightbox({
   src,
@@ -10,12 +29,14 @@ export function ImageLightbox({
   alt: string;
   children: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
+  const id = useId();
+  const active = useActiveLightbox();
+  const open = active === id;
 
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") setActive(null);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -25,7 +46,7 @@ export function ImageLightbox({
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => setActive(id)}
         className="block w-full cursor-zoom-in appearance-none border-none bg-transparent p-0 text-left"
         aria-label={`View ${alt}`}
       >
@@ -34,14 +55,14 @@ export function ImageLightbox({
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
-          onClick={() => setOpen(false)}
+          onClick={() => setActive(null)}
           role="dialog"
           aria-modal="true"
           aria-label={alt}
         >
           <button
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={() => setActive(null)}
             className="absolute right-4 top-4 rounded-full bg-[#CCFF00] p-2 text-black shadow-lg transition-transform hover:scale-110"
             aria-label="Close"
           >
