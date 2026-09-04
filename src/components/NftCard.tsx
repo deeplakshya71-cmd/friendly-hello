@@ -185,9 +185,7 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
           />
           <div>
             <p className="btn-text text-black/50">#{nft.tokenId.toString()}</p>
-            <p className="btn-text text-black">
-              Lv {nft.level}/{MAX_LEVEL}
-            </p>
+            <p className="btn-text text-black">TIER {nft.level}</p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1.5">

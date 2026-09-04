@@ -1,8 +1,56 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { NftCard } from "@/components/NftCard";
 import { Toaster } from "@/components/ui/sonner";
 import { useOwnedNfts } from "@/hooks/useLitdex";
 import { WalletProvider, useWallet } from "@/hooks/useWallet";
+import type { OwnedNft } from "@/lib/litdex";
+
+const RARITY_OPTIONS = [
+  { value: "all", label: "All rarities" },
+  { value: "0", label: "Common" },
+  { value: "1", label: "Rare" },
+  { value: "2", label: "Epic" },
+  { value: "3", label: "Legend" },
+];
+
+const STATUS_OPTIONS = [
+  { value: "all", label: "All status" },
+  { value: "healthy", label: "Healthy" },
+  { value: "damaged", label: "Damaged" },
+];
+
+const SORT_OPTIONS = [
+  { value: "highest", label: "Highest level" },
+  { value: "newest", label: "Newest" },
+];
+
+function Select({
+  value,
+  onChange,
+  options,
+  label,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  label: string;
+}) {
+  return (
+    <select
+      aria-label={label}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="btn-text rounded-full border-2 border-black bg-white px-4 py-2 text-black outline-none"
+    >
+      {options.map((o) => (
+        <option key={o.value} value={o.value}>
+          {o.label}
+        </option>
+      ))}
+    </select>
+  );
+}
 
 export const Route = createFileRoute("/levels")({
   head: () => ({
@@ -29,6 +77,24 @@ export const Route = createFileRoute("/levels")({
 function LevelsView() {
   const { address, connect } = useWallet();
   const { data, isLoading } = useOwnedNfts();
+  const [rarity, setRarity] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [sort, setSort] = useState("highest");
+
+  const list = useMemo<OwnedNft[]>(() => {
+    let out = [...(data ?? [])];
+    if (rarity !== "all") out = out.filter((n) => n.rarity === Number(rarity));
+    if (status === "damaged") out = out.filter((n) => n.damaged);
+    if (status === "healthy") out = out.filter((n) => !n.damaged);
+    out.sort((a, b) => {
+      if (sort === "highest") {
+        if (a.rarity !== b.rarity) return b.rarity - a.rarity;
+        if (a.level !== b.level) return b.level - a.level;
+      }
+      return a.tokenId > b.tokenId ? -1 : a.tokenId < b.tokenId ? 1 : 0;
+    });
+    return out;
+  }, [data, rarity, status, sort]);
 
   return (
     <div className="min-h-screen bg-[#0038FF] px-4 py-12">
@@ -39,6 +105,15 @@ function LevelsView() {
             <span className="btn-label">Back</span>
           </Link>
         </div>
+
+        {address && (
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Select label="Filter by rarity" value={rarity} onChange={setRarity} options={RARITY_OPTIONS} />
+            <Select label="Filter by status" value={status} onChange={setStatus} options={STATUS_OPTIONS} />
+            <Select label="Sort champions" value={sort} onChange={setSort} options={SORT_OPTIONS} />
+          </div>
+        )}
+
 
         <div className="mt-10 space-y-8">
           {!address ? (
@@ -53,13 +128,15 @@ function LevelsView() {
             </div>
           ) : isLoading ? (
             <p className="btn-text text-center text-black/50">Scanning token IDs…</p>
-          ) : !data || data.length === 0 ? (
+          ) : list.length === 0 ? (
             <div className="btn-text rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-8 text-center text-black/50">
-              You don't own any Litdex champions yet.
+              {data && data.length > 0
+                ? "No champions match these filters."
+                : "You don't own any Litdex champions yet."}
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.map((nft) => (
+              {list.map((nft) => (
                 <NftCard key={nft.tokenId.toString()} nft={nft} />
               ))}
             </div>

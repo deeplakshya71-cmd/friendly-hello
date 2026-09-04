@@ -64,7 +64,7 @@ const HARD_SHADOW =
 const NAV_LINKS: Array<[string, string]> = [
   ["Champions", "#champions"],
   ["My points", "#points"],
-  ["Levels", "#levels"],
+  ["Levels", "/levels"],
   ["Mint", "#mint"],
 ];
 
