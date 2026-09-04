@@ -181,7 +181,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
           <img
             src={RARITY_IMAGE[nft.rarity] ?? commonPfp.url}
             alt={`${RARITY_NAMES[nft.rarity] ?? "Common"} rarity logo`}
-            className="size-12 rounded-full border-[3px] border-white bg-white object-cover shadow-inner"
+            className="size-12 object-contain"
           />
           <div>
             <p className="font-mono text-xs text-black/50">#{nft.tokenId.toString()}</p>
