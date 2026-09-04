@@ -155,6 +155,36 @@
   text-transform: uppercase;
 }
 
+/* Section headings: same font family but larger and bolder */
+.btn-heading {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .btn-heading {
+    font-size: 1.5rem;
+  }
+}
+
+/* Hero nav links: white outline that turns black-on-white on hover */
+.btn-ghost.nav-link {
+  --bink: #ffffff;
+  --bsurf: transparent;
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-ghost.nav-link:hover {
+  --bink: #000000;
+  --bsurf: #ffffff;
+  background-color: #ffffff;
+  color: #000000;
+}
+
 /* Lift button style — used by clickable action buttons */
 .btn {
   --primary: #ccff00;
