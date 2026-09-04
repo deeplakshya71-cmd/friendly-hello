@@ -1,0 +1,80 @@
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { NftCard } from "@/components/NftCard";
+import { Toaster } from "@/components/ui/sonner";
+import { useOwnedNfts } from "@/hooks/useLitdex";
+import { WalletProvider, useWallet } from "@/hooks/useWallet";
+
+export const Route = createFileRoute("/levels")({
+  head: () => ({
+    meta: [
+      { title: "Levels — Manage Your Litdex Champions" },
+      {
+        name: "description",
+        content:
+          "Level up, repair, promote and transfer your Litdex champions with full stats and costs on one page.",
+      },
+      { property: "og:title", content: "Levels — Manage Your Litdex Champions" },
+      {
+        property: "og:description",
+        content:
+          "Full champion management: level up cost, repair, transfer and OpenSea links for every Litdex NFT you own.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: Page,
+});
+
+function LevelsView() {
+  const { address, connect } = useWallet();
+  const { data, isLoading } = useOwnedNfts();
+
+  return (
+    <div className="min-h-screen bg-[#0038FF] px-4 py-12">
+      <div className="mx-auto max-w-6xl rounded-[2.5rem] bg-white p-6 md:p-10">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h1 className="btn-heading heading-ul">Levels</h1>
+          <Link to="/" className="btn fx-9 btn-pill btn-blue">
+            <span className="btn-label">Back</span>
+          </Link>
+        </div>
+
+        <div className="mt-10 space-y-8">
+          {!address ? (
+            <div className="rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-10 text-center">
+              <p className="btn-text text-black">Connect your wallet to manage champions</p>
+              <button
+                onClick={() => void connect()}
+                className="btn fx-9 btn-pill btn-lime mt-6"
+              >
+                <span className="btn-label">Connect wallet</span>
+              </button>
+            </div>
+          ) : isLoading ? (
+            <p className="btn-text text-center text-black/50">Scanning token IDs…</p>
+          ) : !data || data.length === 0 ? (
+            <div className="btn-text rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-8 text-center text-black/50">
+              You don't own any Litdex champions yet.
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {data.map((nft) => (
+                <NftCard key={nft.tokenId.toString()} nft={nft} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Page() {
+  return (
+    <WalletProvider>
+      <LevelsView />
+      <Toaster />
+    </WalletProvider>
+  );
+}
