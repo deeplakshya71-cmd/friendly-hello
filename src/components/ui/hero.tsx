@@ -45,14 +45,14 @@ const CircularBadge = ({ onClick }: { onClick?: () => void }) => (
     <div className="absolute inset-0 flex items-center justify-center">
       <svg
         viewBox="0 0 100 100"
-        className="h-10 w-10 overflow-visible stroke-current text-black"
+        className="h-9 w-9 stroke-current text-black"
         fill="none"
-        strokeWidth="8"
+        strokeWidth="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M20,20 Q 45,35 40,55 T 55,85" />
-        <path d="M30,68 L55,88 L78,64" />
+        <path d="M50,18 L50,78" />
+        <path d="M26,56 L50,80 L74,56" />
       </svg>
     </div>
   </div>
