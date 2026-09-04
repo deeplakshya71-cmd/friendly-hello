@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
-import championCommon from "@/assets/champion-common.png";
-import championRare from "@/assets/champion-rare.png";
+import epicAsset from "@/assets/litdex-epic-home.png.asset.json";
+import legendAsset from "@/assets/litdex-legend-home.png.asset.json";
 import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/litdex";
 
