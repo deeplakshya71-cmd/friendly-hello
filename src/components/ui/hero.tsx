@@ -18,20 +18,6 @@ const ArrowGreenLeft = () => (
   </svg>
 );
 
-const ArrowGreenRight = () => (
-  <svg
-    viewBox="0 0 100 100"
-    className="h-full w-full overflow-visible stroke-current text-[#CCFF00]"
-    fill="none"
-    strokeWidth="6"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M90,10 C 80,60 60,80 40,60 C 20,40 40,20 60,30 C 80,40 70,70 50,80" />
-    <path d="M65,75 L50,80 L55,65" />
-  </svg>
-);
-
 const CircularBadge = ({ onClick }: { onClick?: () => void }) => (
   <div
     onClick={onClick}
@@ -201,10 +187,6 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
 
             <div className="absolute bottom-[0%] left-[0%] z-20 h-24 w-24 md:left-[10%] md:h-32 md:w-32">
               <ArrowGreenLeft />
-            </div>
-
-            <div className="absolute top-[6%] right-[-6%] z-20 h-20 w-20 md:top-[4%] md:right-[1%] md:h-28 md:w-28">
-              <ArrowGreenRight />
             </div>
 
             <div className="pointer-events-auto absolute right-[0%] bottom-[-10%] z-40 md:right-[15%]">
