@@ -104,17 +104,17 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
         {address ? (
           <button
             onClick={disconnect}
-            className="rounded-full border border-white bg-white px-6 py-2 font-mono text-xs font-semibold text-[#0038FF] transition-colors hover:bg-[#CCFF00] hover:text-black md:text-sm"
+            className="btn fx-9 btn-pill btn-white"
           >
-            {truncateAddress(address)}
+            <span className="btn-label">{truncateAddress(address)}</span>
           </button>
         ) : (
           <button
             onClick={() => void connect()}
             disabled={connecting}
-            className="rounded-full border border-white px-6 py-2 text-xs font-semibold text-white transition-colors hover:bg-white hover:text-[#0038FF] md:text-sm"
+            className="btn fx-9 btn-pill btn-ghost"
           >
-            {connecting ? "Connecting…" : hasWallet ? "Connect wallet" : "Install wallet"}
+            <span className="btn-label">{connecting ? "Connecting…" : hasWallet ? "Connect wallet" : "Install wallet"}</span>
           </button>
         )}
       </nav>
