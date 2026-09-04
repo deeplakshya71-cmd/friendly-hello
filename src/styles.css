@@ -200,6 +200,10 @@
   box-shadow: 0 8px 0 -2px color-mix(in srgb, var(--bink) 30%, transparent);
 }
 
+.btn-pill {
+  border-radius: 9999px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .btn,
   .btn::before,

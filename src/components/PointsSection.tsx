@@ -47,7 +47,7 @@ export function PointsSection() {
           </div>
           <button
             onClick={() => setOpen(true)}
-            className="btn fx-9"
+            className="btn fx-9 btn-pill"
             style={{ backgroundColor: "#CCFF00" }}
           >
             <span className="btn-label">Claim</span>
