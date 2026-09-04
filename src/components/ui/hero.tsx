@@ -1,4 +1,6 @@
 import { motion } from "motion/react";
+import championCommon from "@/assets/champion-common.png";
+import championRare from "@/assets/champion-rare.png";
 import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/litdex";
 
@@ -11,22 +13,8 @@ const ArrowGreenLeft = () => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <path d="M10,90 C 10,40 40,20 60,50 C 70,65 80,75 95,70" />
-    <path d="M80,55 L95,70 L85,85" />
-  </svg>
-);
-
-const ArrowGreenRight = () => (
-  <svg
-    viewBox="0 0 100 100"
-    className="h-full w-full overflow-visible stroke-current text-[#CCFF00]"
-    fill="none"
-    strokeWidth="6"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M90,10 C 80,60 60,80 40,60 C 20,40 40,20 60,30 C 80,40 70,70 50,80" />
-    <path d="M65,75 L50,80 L55,65" />
+    <path d="M10,10 C 10,55 35,70 55,55 C 75,40 80,55 78,85" />
+    <path d="M62,68 L78,88 L92,66" />
   </svg>
 );
 
@@ -42,9 +30,14 @@ const CircularBadge = ({ onClick }: { onClick?: () => void }) => (
           d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0"
           fill="none"
         />
-        <text className="text-[11px] font-black tracking-[0.18em] uppercase" fill="black">
-          <textPath href="#circlePath" startOffset="0%">
-            MINT A CHAMPION • MINT A CHAMPION •
+        <text className="font-black uppercase" fill="black" fontSize="9.5" letterSpacing="0.5">
+          <textPath
+            href="#circlePath"
+            startOffset="0%"
+            textLength="226"
+            lengthAdjust="spacing"
+          >
+            MINT A CHAMPION • MINT A CHAMPION •&nbsp;
           </textPath>
         </text>
       </svg>
@@ -58,8 +51,8 @@ const CircularBadge = ({ onClick }: { onClick?: () => void }) => (
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <path d="M20,80 Q 40,50 30,30 T 80,20" />
-        <path d="M60,10 L80,20 L70,40" />
+        <path d="M20,20 Q 45,35 40,55 T 55,85" />
+        <path d="M30,68 L55,88 L78,64" />
       </svg>
     </div>
   </div>
@@ -163,35 +156,37 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="pointer-events-auto absolute bottom-[10%] left-[5%] z-30 md:left-[20%]"
             >
-              <div className="flex aspect-[3/3.5] w-40 rotate-[-12deg] flex-col items-center justify-center rounded-[2rem] border border-white/40 bg-white/20 p-5 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-0 md:w-52">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-white/50 bg-[#4D9FFF] shadow-inner md:h-24 md:w-24"></div>
-                <div className="mt-2 text-center">
-                  <p className="text-sm font-bold text-white md:text-lg">Champion #1</p>
-                  <p className="mt-1 text-[10px] text-white/80 md:text-xs">Common · Lv 4</p>
-                </div>
+              <div className="flex aspect-[3/3.5] w-40 rotate-[-12deg] items-center justify-center rounded-[2rem] border border-white/40 bg-white/20 p-4 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-0 md:w-52">
+                <img
+                  src={championCommon}
+                  alt="Common tier Litdex champion"
+                  loading="lazy"
+                  width={768}
+                  height={896}
+                  className="h-full w-full object-contain drop-shadow-lg"
+                />
               </div>
             </motion.div>
 
             <motion.div
               animate={{ y: [0, -20, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="pointer-events-auto absolute top-[15%] right-[5%] z-30 md:right-[22%]"
+              className="pointer-events-auto absolute top-[34%] right-[2%] z-30 md:top-[32%] md:right-[18%]"
             >
-              <div className="flex aspect-[3/3.5] w-40 rotate-[12deg] flex-col items-center justify-center rounded-[2rem] border border-white/40 bg-white/20 p-5 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-0 md:w-52">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-white/50 bg-[#C24DFF] shadow-inner md:h-24 md:w-24"></div>
-                <div className="mt-2 text-center">
-                  <p className="text-sm font-bold text-white md:text-lg">Champion #9</p>
-                  <p className="mt-1 text-[10px] text-white/80 md:text-xs">Rare · Lv 1</p>
-                </div>
+              <div className="flex aspect-[3/3.5] w-40 rotate-[12deg] items-center justify-center rounded-[2rem] border border-white/40 bg-white/20 p-4 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-0 md:w-52">
+                <img
+                  src={championRare}
+                  alt="Rare tier Litdex champion"
+                  loading="lazy"
+                  width={768}
+                  height={896}
+                  className="h-full w-full object-contain drop-shadow-lg"
+                />
               </div>
             </motion.div>
 
             <div className="absolute bottom-[0%] left-[0%] z-20 h-24 w-24 md:left-[10%] md:h-32 md:w-32">
               <ArrowGreenLeft />
-            </div>
-
-            <div className="absolute top-[5%] right-[0%] z-20 h-24 w-24 md:right-[10%] md:h-32 md:w-32">
-              <ArrowGreenRight />
             </div>
 
             <div className="pointer-events-auto absolute right-[0%] bottom-[-10%] z-40 md:right-[15%]">
