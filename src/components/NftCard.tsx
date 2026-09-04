@@ -54,18 +54,18 @@ function PillButton({
   disabled?: boolean;
   variant?: "lime" | "blue" | "ghost";
 }) {
-  const styles = {
-    lime: "bg-[#CCFF00] text-black",
-    blue: "bg-[#0038FF] text-white",
-    ghost: "border border-black/20 bg-transparent text-black",
+  const variantClass = {
+    lime: "btn-lime",
+    blue: "btn-blue",
+    ghost: "btn-ghost",
   }[variant];
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`w-full rounded-full px-4 py-2.5 text-sm font-bold shadow-md transition-transform hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100 ${styles}`}
+      className={`btn fx-9 btn-pill ${variantClass} w-full`}
     >
-      {children}
+      <span className="btn-label">{children}</span>
     </button>
   );
 }
@@ -192,13 +192,13 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
         </div>
         <div className="flex flex-col items-end gap-1.5">
           <span
-            className="rounded-full px-3 py-1 text-xs font-bold text-white"
+            className="btn-text rounded-full px-3 py-1 text-white"
             style={{ backgroundColor: rarityColor }}
           >
             {RARITY_NAMES[nft.rarity] ?? "Unknown"}
           </span>
           {nft.damaged && (
-            <span className="rounded-full bg-[#FF4D4D] px-3 py-1 text-xs font-bold text-white">
+            <span className="btn-text rounded-full bg-[#FF4D4D] px-3 py-1 text-white">
               Damaged
             </span>
           )}
@@ -264,9 +264,9 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
           <button
             onClick={() => void handleTransfer()}
             disabled={disabled}
-            className="shrink-0 rounded-full bg-[#CCFF00] px-4 py-2 text-xs font-bold text-black shadow-md transition-transform hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
+            className="btn fx-9 btn-pill btn-lime shrink-0"
           >
-            {busy === "Transfer" ? "…" : "Send"}
+            <span className="btn-label">{busy === "Transfer" ? "…" : "Send"}</span>
           </button>
         </div>
         <a

@@ -146,7 +146,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
             {available !== null && (
               <button
                 type="button"
-                className="text-xs font-semibold text-[#CCFF00] hover:underline"
+                className="btn-text text-xs font-semibold text-[#CCFF00] hover:underline"
                 disabled={busy}
                 onClick={() => setAmount(available.toString())}
               >
@@ -174,11 +174,11 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
             </div>
           ) : (
             <Button
-              className="w-full rounded-full bg-[#CCFF00] py-6 text-sm font-bold text-black shadow-lg transition-transform hover:scale-[1.02] hover:bg-[#CCFF00]"
+              className="btn fx-9 btn-pill btn-lime w-full py-6"
               disabled={!amountValid || !correctNetwork}
               onClick={() => void handleConvert()}
             >
-              Convert
+              <span className="btn-label">Convert</span>
             </Button>
           )}
           {!correctNetwork && (

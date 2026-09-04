@@ -63,7 +63,7 @@ export function ImageLightbox({
           <button
             type="button"
             onClick={() => setActive(null)}
-            className="absolute right-4 top-4 rounded-full bg-[#CCFF00] p-2 text-black shadow-lg transition-transform hover:scale-110"
+            className="btn fx-9 btn-pill btn-lime absolute right-4 top-4"
             aria-label="Close"
           >
             <X className="size-5" />

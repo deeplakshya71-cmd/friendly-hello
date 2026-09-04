@@ -146,7 +146,16 @@
   }
 }
 
-/* Lift button style — used by the Claim button */
+/* Shared button text style */
+.btn-text {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Lift button style — used by clickable action buttons */
 .btn {
   --primary: #ccff00;
   --secondary: #000000;
@@ -155,11 +164,6 @@
   --bsurf: var(--surface);
   position: relative;
   isolation: isolate;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   padding: 13px 24px;
   border: 1px solid var(--bink);
   border-radius: 8px;
@@ -169,6 +173,15 @@
   overflow: hidden;
   white-space: nowrap;
   transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn,
+.btn-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .btn-label {
@@ -200,8 +213,44 @@
   box-shadow: 0 8px 0 -2px color-mix(in srgb, var(--bink) 30%, transparent);
 }
 
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:disabled:hover,
+.btn[aria-disabled="true"]:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .btn-pill {
   border-radius: 9999px;
+}
+
+.btn-lime {
+  --bink: #000000;
+  --bsurf: #ccff00;
+  background-color: #ccff00;
+}
+
+.btn-blue {
+  --bink: #ffffff;
+  --bsurf: #0038ff;
+  background-color: #0038ff;
+}
+
+.btn-ghost {
+  --bink: #ffffff;
+  --bsurf: transparent;
+  background-color: transparent;
+}
+
+.btn-white {
+  --bink: #0038ff;
+  --bsurf: #ffffff;
+  background-color: #ffffff;
 }
 
 @media (prefers-reduced-motion: reduce) {

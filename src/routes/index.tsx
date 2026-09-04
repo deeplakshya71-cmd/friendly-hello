@@ -54,9 +54,9 @@ function Dashboard() {
               </p>
               <button
                 onClick={() => void connect()}
-                className="mt-6 rounded-full bg-[#CCFF00] px-8 py-3 text-sm font-bold text-black shadow-lg transition-transform hover:scale-105"
+                className="btn fx-9 btn-pill btn-lime mt-6"
               >
-                Connect wallet
+                <span className="btn-label">Connect wallet</span>
               </button>
             </div>
           ) : (

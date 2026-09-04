@@ -96,7 +96,7 @@ export function MintCard() {
 
       <div className="mt-auto flex flex-col items-center gap-3 pt-8">
         <div className="rounded-full bg-[#CCFF00] px-6 py-3 shadow-lg">
-          <p className="font-mono text-sm font-bold text-black">
+          <p className="btn-text font-bold text-black">
             {isLoading || !data
               ? "…"
               : `$${formatUsdt(data.price)} · ${data.minted.toString()}/${data.cap.toString()} minted`}
@@ -105,9 +105,9 @@ export function MintCard() {
         <button
           disabled={!address || !correctNetwork || soldOut || busy || !data}
           onClick={() => void handleMint()}
-          className="w-full rounded-full bg-[#0038FF] px-6 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+          className="btn fx-9 btn-pill btn-blue w-full"
         >
-          {soldOut ? "Sold out" : (status ?? "Mint champion")}
+          <span className="btn-label">{soldOut ? "Sold out" : (status ?? "Mint champion")}</span>
         </button>
         {!address && (
           <p className="text-xs text-black/50">Connect your wallet to mint.</p>

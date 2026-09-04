@@ -18,16 +18,16 @@ export function LevelCard() {
 
       <div className="mt-auto flex flex-col items-center gap-3 pt-8">
         <div className="rounded-full bg-[#0038FF] px-6 py-3 shadow-lg">
-          <p className="font-mono text-sm font-bold text-white">
+          <p className="btn-text font-bold text-white">
             {isLoading ? "…" : formatPoints(data ?? 0n)}{" "}
             <span className="text-white/70">Base pts</span>
           </p>
         </div>
         <a
           href="#champions"
-          className="w-full rounded-full bg-[#CCFF00] px-6 py-3 text-center text-sm font-bold text-black shadow-lg transition-transform hover:scale-[1.03]"
+          className="btn fx-9 btn-pill btn-lime w-full text-center"
         >
-          Level a champion
+          <span className="btn-label">Level a champion</span>
         </a>
       </div>
     </div>

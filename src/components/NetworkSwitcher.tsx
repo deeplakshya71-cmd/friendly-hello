@@ -36,11 +36,9 @@ export function NetworkSwitcher({ tone = "light" }: { tone?: "light" | "dark" })
             type="button"
             disabled={active || pending !== null}
             onClick={() => void handle(c)}
-            className={`rounded-full px-3 py-1.5 text-xs font-bold transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 ${
-              active ? "bg-[#CCFF00] text-black" : "bg-[#0038FF] text-white"
-            }`}
+            className={`btn fx-9 btn-pill ${active ? "btn-lime" : "btn-blue"}`}
           >
-            {pending === c.chainId ? "Switching…" : `Switch to ${c.chainName}`}
+            <span className="btn-label">{pending === c.chainId ? "Switching…" : `Switch to ${c.chainName}`}</span>
           </button>
         );
       })}

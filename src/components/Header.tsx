@@ -29,19 +29,19 @@ export function Header() {
             <Button
               size="sm"
               onClick={disconnect}
-              className="rounded-full font-mono font-bold shadow-[0_0_20px_-4px_var(--color-primary)]"
+              className="btn fx-9 btn-pill btn-white"
             >
-              {truncateAddress(address)}
+              <span className="btn-label">{truncateAddress(address)}</span>
             </Button>
           ) : (
             <Button
               size="sm"
               disabled={connecting}
               onClick={() => void connect()}
-              className="rounded-full font-bold shadow-[0_0_20px_-4px_var(--color-primary)]"
+              className="btn fx-9 btn-pill btn-lime"
             >
-              <Wallet />
-              {connecting ? "Connecting…" : hasWallet ? "Connect wallet" : "Install Wallet"}
+              <Wallet className="size-4" />
+              <span className="btn-label">{connecting ? "Connecting…" : hasWallet ? "Connect wallet" : "Install Wallet"}</span>
             </Button>
           )}
         </div>
