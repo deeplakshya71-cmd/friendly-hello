@@ -1,4 +1,6 @@
-import { useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { Menu } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { NftCard } from "@/components/NftCard";
 import { useOwnedNfts } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
@@ -6,9 +8,7 @@ import type { OwnedNft } from "@/lib/litdex";
 
 const PAGE_SIZE = 3;
 
-type SortKey = "newest" | "oldest" | "level";
 type RarityKey = "all" | "0" | "1" | "2" | "3";
-type StatusKey = "all" | "damaged" | "healthy";
 
 const RARITY_OPTIONS: { value: RarityKey; label: string }[] = [
   { value: "all", label: "All rarities" },
@@ -18,39 +18,57 @@ const RARITY_OPTIONS: { value: RarityKey; label: string }[] = [
   { value: "3", label: "Legend" },
 ];
 
-const STATUS_OPTIONS: { value: StatusKey; label: string }[] = [
-  { value: "all", label: "All status" },
-  { value: "damaged", label: "Damaged" },
-  { value: "healthy", label: "Repaired" },
-];
-
-const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: "newest", label: "Newest" },
-  { value: "oldest", label: "Oldest" },
-  { value: "level", label: "Highest level" },
-];
-
-function Select<T extends string>({
+function RarityFilter({
   value,
   onChange,
-  options,
 }: {
-  value: T;
-  onChange: (v: T) => void;
-  options: { value: T; label: string }[];
+  value: RarityKey;
+  onChange: (v: RarityKey) => void;
 }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
+
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value as T)}
-      className="btn-text cursor-pointer rounded-full border border-black/20 bg-white px-4 py-2 text-black outline-none focus:border-[#0038FF]"
-    >
-      {options.map((o) => (
-        <option key={o.value} value={o.value} className="btn-text">
-          {o.label}
-        </option>
-      ))}
-    </select>
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Filter champions by rarity"
+        aria-expanded={open}
+        className="btn fx-9 btn-pill btn-blue"
+      >
+        <span className="btn-label flex items-center gap-2">
+          <Menu className="size-4" />
+          Filter
+        </span>
+      </button>
+      {open && (
+        <div className="absolute right-0 z-30 mt-2 w-48 overflow-hidden rounded-2xl border border-black/15 bg-white shadow-xl">
+          {RARITY_OPTIONS.map((o) => (
+            <button
+              key={o.value}
+              onClick={() => {
+                onChange(o.value);
+                setOpen(false);
+              }}
+              className={`btn-text block w-full px-4 py-3 text-left ${
+                value === o.value ? "bg-[#0038FF] text-white" : "text-black hover:bg-black/5"
+              }`}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -58,31 +76,18 @@ export function NftSection() {
   const { address } = useWallet();
   const { data, isLoading } = useOwnedNfts();
   const [rarity, setRarity] = useState<RarityKey>("all");
-  const [status, setStatus] = useState<StatusKey>("all");
-  const [sort, setSort] = useState<SortKey>("newest");
   const [page, setPage] = useState(0);
 
   const filtered = useMemo<OwnedNft[]>(() => {
     let list = [...(data ?? [])];
     if (rarity !== "all") list = list.filter((n) => n.rarity === Number(rarity));
-    if (status === "damaged") list = list.filter((n) => n.damaged);
-    if (status === "healthy") list = list.filter((n) => !n.damaged);
-    list.sort((a, b) => {
-      if (sort === "level") return b.level - a.level;
-      const diff = a.tokenId > b.tokenId ? 1 : a.tokenId < b.tokenId ? -1 : 0;
-      return sort === "newest" ? -diff : diff;
-    });
+    list.sort((a, b) => (a.tokenId > b.tokenId ? -1 : a.tokenId < b.tokenId ? 1 : 0));
     return list;
-  }, [data, rarity, status, sort]);
+  }, [data, rarity]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(page, pageCount - 1);
   const visible = filtered.slice(current * PAGE_SIZE, current * PAGE_SIZE + PAGE_SIZE);
-
-  const reset = <T,>(setter: (v: T) => void) => (v: T) => {
-    setter(v);
-    setPage(0);
-  };
 
   if (!address) return null;
 
@@ -93,10 +98,14 @@ export function NftSection() {
         <h2 className="btn-heading heading-ul text-center text-black">
           My <span className="text-[#0038FF]">champions</span>
         </h2>
-        <div className="flex flex-wrap justify-center gap-2 md:w-1/4 md:justify-end">
-          <Select value={rarity} onChange={reset(setRarity)} options={RARITY_OPTIONS} />
-          <Select value={status} onChange={reset(setStatus)} options={STATUS_OPTIONS} />
-          <Select value={sort} onChange={reset(setSort)} options={SORT_OPTIONS} />
+        <div className="flex justify-center md:w-1/4 md:justify-end">
+          <RarityFilter
+            value={rarity}
+            onChange={(v) => {
+              setRarity(v);
+              setPage(0);
+            }}
+          />
         </div>
       </div>
 
@@ -104,15 +113,25 @@ export function NftSection() {
       {!isLoading && filtered.length === 0 && (
         <div className="btn-text rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-8 text-center text-black/50">
           {data && data.length > 0
-            ? "No champions match these filters."
+            ? "No champions match this filter."
             : "You don't own any Litdex champions yet. Mint one above."}
         </div>
       )}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((nft) => (
-          <NftCard key={nft.tokenId.toString()} nft={nft} />
+          <NftCard key={nft.tokenId.toString()} nft={nft} compact />
         ))}
       </div>
+
+      {filtered.length > 0 && (
+        <p className="btn-text text-center text-black/50">
+          Manage, level up and transfer on the{" "}
+          <Link to="/levels" className="text-[#0038FF] hover:underline">
+            levels page
+          </Link>
+          .
+        </p>
+      )}
 
       {filtered.length > PAGE_SIZE && (
         <div className="flex items-center justify-center gap-3">
