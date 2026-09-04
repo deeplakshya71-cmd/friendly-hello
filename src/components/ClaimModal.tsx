@@ -113,13 +113,13 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="rounded-2xl border border-white/25 bg-white/10 p-3 text-sm">
-            {litvm.isLoading && <span className="text-white/60">Loading LitVM balance…</span>}
-            {litvm.isError && <span className="text-[#FF8080]">Could not load LitVM balance.</span>}
+          <div className="rounded-2xl border border-white/25 bg-white/10 p-3">
+            {litvm.isLoading && <span className="btn-text text-white/60">Loading LitVM balance…</span>}
+            {litvm.isError && <span className="btn-text text-[#FF8080]">Could not load LitVM balance.</span>}
             {litvm.data && (
-              <span>
+              <span className="btn-text">
                 You have{" "}
-                <span className="font-mono font-semibold text-[#CCFF00]">
+                <span className="btn-text text-[#CCFF00]">
                   {formatPoints(litvm.data.litvmAvailable)}
                 </span>{" "}
                 points on LitVM.
