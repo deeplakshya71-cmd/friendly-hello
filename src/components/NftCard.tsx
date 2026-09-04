@@ -281,6 +281,7 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
           View on OpenSea <ExternalLink className="size-3" />
         </a>
       </div>
+      )}
     </div>
   );
 }
