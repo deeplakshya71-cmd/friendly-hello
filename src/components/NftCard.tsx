@@ -159,7 +159,13 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
   const rarityColor = RARITY_COLOR[nft.rarity] ?? "#A8A0BE";
 
   return (
-    <div className="flex flex-col gap-4 rounded-[2rem] border border-[#0038FF]/15 bg-[#0038FF]/5 p-6 shadow-xl backdrop-blur-md">
+    <div
+      className="flex flex-col gap-4 rounded-[2rem] border-2 bg-[#0a0a0f] p-6 shadow-2xl"
+      style={{
+        borderColor: `${rarityColor}40`,
+        boxShadow: `0 0 28px -4px ${rarityColor}30`,
+      }}
+    >
       {artLoading ? (
         <div className="aspect-square w-full animate-pulse rounded-3xl bg-black/10" />
       ) : artwork ? (
