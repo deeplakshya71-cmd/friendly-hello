@@ -128,13 +128,15 @@ function LevelsView() {
             </div>
           ) : isLoading ? (
             <p className="btn-text text-center text-black/50">Scanning token IDs…</p>
-          ) : !data || data.length === 0 ? (
+          ) : list.length === 0 ? (
             <div className="btn-text rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-8 text-center text-black/50">
-              You don't own any Litdex champions yet.
+              {data && data.length > 0
+                ? "No champions match these filters."
+                : "You don't own any Litdex champions yet."}
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.map((nft) => (
+              {list.map((nft) => (
                 <NftCard key={nft.tokenId.toString()} nft={nft} />
               ))}
             </div>
