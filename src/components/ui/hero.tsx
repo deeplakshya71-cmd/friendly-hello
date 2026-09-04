@@ -69,7 +69,8 @@ const NAV_LINKS: Array<[string, string]> = [
 ];
 
 export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
-  const { address, connect, connecting, hasWallet, disconnect } = useWallet();
+  const { address, connect, connecting, hasWallet, disconnect, chainId } = useWallet();
+  const onBase = chainId === 84532;
 
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#0038FF] font-sans selection:bg-[#CCFF00] selection:text-black">
@@ -78,14 +79,14 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
       <nav className="relative z-20 mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-6 md:px-10 md:py-8">
         <div className="flex items-center gap-1">
           <div className="relative rounded-2xl rounded-bl-sm bg-white px-3 py-1.5 text-xs font-black tracking-tight text-black shadow-sm md:text-sm">
-            LITDEX
+            {onBase ? "BASE" : "LITDEX"}
             <div
               className="absolute -bottom-1.5 left-0 h-3 w-3 bg-white"
               style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
             ></div>
           </div>
           <div className="rounded-full border-[1.5px] border-white bg-[#CCFF00] px-3 py-1.5 text-xs font-black text-black shadow-sm md:text-sm">
-            TESTNET
+            {onBase ? "MAINNET" : "TESTNET"}
           </div>
         </div>
 
@@ -94,9 +95,9 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
             <a
               key={item}
               href={href}
-              className="rounded-full border border-white/30 px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-white/10"
+              className="btn fx-9 btn-pill btn-ghost nav-link"
             >
-              {item}
+              <span className="btn-label">{item}</span>
             </a>
           ))}
         </div>
