@@ -13,7 +13,9 @@ function useActiveLightbox() {
   const [active, setActive] = useState(activeId);
   useEffect(() => {
     listeners.add(setActive);
-    return () => listeners.delete(setActive);
+    return () => {
+      listeners.delete(setActive);
+    };
   }, []);
   return active;
 }
