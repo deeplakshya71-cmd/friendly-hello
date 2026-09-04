@@ -70,7 +70,7 @@ function PillButton({
   );
 }
 
-export function NftCard({ nft }: { nft: OwnedNft }) {
+export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boolean }) {
   const { address, getSigner, correctNetwork } = useWallet();
   const refreshAll = useRefreshAll();
   const { data: points } = useBasePoints();
@@ -205,6 +205,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
         </div>
       </div>
 
+      {!compact && (
       <div className="space-y-2 border-t border-black/10 pt-4">
         {atMax ? (
           <>
@@ -250,7 +251,9 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
           </PillButton>
         )}
       </div>
+      )}
 
+      {!compact && (
       <div className="space-y-2 border-t border-black/10 pt-4">
         <p className="btn-text text-black/50">Transfer</p>
         <div className="flex gap-2">
@@ -278,6 +281,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
           View on OpenSea <ExternalLink className="size-3" />
         </a>
       </div>
+      )}
     </div>
   );
 }

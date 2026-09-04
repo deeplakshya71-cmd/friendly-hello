@@ -164,13 +164,17 @@
   text-transform: uppercase;
 }
 
-/* Blue underline accent below section headings */
+/* Blue underline accent below section headings — spans exactly the text width */
+.heading-ul {
+  display: inline-block;
+}
+
 .heading-ul::after {
   content: "";
   display: block;
-  width: 72px;
+  width: 100%;
   height: 3px;
-  margin: 0.65rem auto 0;
+  margin: 0.65rem 0 0;
   border-radius: 9999px;
   background: #0038ff;
 }
