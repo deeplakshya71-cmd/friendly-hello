@@ -3,6 +3,10 @@ import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ImageLightbox } from "@/components/ImageLightbox";
+import commonPfp from "@/assets/commonpfp.png.asset.json";
+import epicPfp from "@/assets/epicpfp.png.asset.json";
+import legendPfp from "@/assets/legendpfp.png.asset.json";
+import rarePfp from "@/assets/rarepfp.png.asset.json";
 import {
   usdtRead,
   useBasePoints,
@@ -30,6 +34,13 @@ const RARITY_COLOR: Record<number, string> = {
   1: "#4D9FFF",
   2: "#C24DFF",
   3: "#FFB833",
+};
+
+const RARITY_IMAGE: Record<number, string> = {
+  0: commonPfp.url,
+  1: rarePfp.url,
+  2: epicPfp.url,
+  3: legendPfp.url,
 };
 
 function PillButton({
@@ -167,9 +178,10 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
       ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div
-            className="size-12 rounded-full border-[3px] border-white shadow-inner"
-            style={{ backgroundColor: rarityColor }}
+          <img
+            src={RARITY_IMAGE[nft.rarity] ?? commonPfp.url}
+            alt={`${RARITY_NAMES[nft.rarity] ?? "Common"} rarity logo`}
+            className="size-12 rounded-full border-[3px] border-white bg-white object-cover shadow-inner"
           />
           <div>
             <p className="font-mono text-xs text-black/50">#{nft.tokenId.toString()}</p>
