@@ -44,6 +44,12 @@ export function MintCard() {
       const nft = nftContract(signer);
       const tx = await nft.mint();
       await tx.wait();
+      try {
+        const next = await nftRead().nextTokenId();
+        if (next > 1n) setMintedId(next - 1n);
+      } catch {
+        // artwork is optional
+      }
       await refreshAll();
       toast.success("NFT minted");
     } catch (err) {
