@@ -3,10 +3,10 @@ import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ImageLightbox } from "@/components/ImageLightbox";
-import commonPfp from "@/assets/commonpfp.png.asset.json";
-import epicPfp from "@/assets/epicpfp.png.asset.json";
-import legendPfp from "@/assets/legendpfp.png.asset.json";
-import rarePfp from "@/assets/rarepfp.png.asset.json";
+import commonPfp from "@/assets/cpfp.png.asset.json";
+import epicPfp from "@/assets/epfp.png.asset.json";
+import legendPfp from "@/assets/lpfp.png.asset.json";
+import rarePfp from "@/assets/rpfp.png.asset.json";
 import {
   usdtRead,
   useBasePoints,
