@@ -40,6 +40,8 @@ export function MintCard() {
     );
     return () => clearInterval(timer);
   }, []);
+  const activePass =
+    PASS_CARD_IMAGES[passIndex] ?? PASS_CARD_IMAGES[0] ?? null;
 
   const soldOut = !!data && data.minted >= data.cap;
   const busy = status !== null;
