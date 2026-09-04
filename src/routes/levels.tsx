@@ -1,5 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { LoadingBlock } from "@/components/LoadingImage";
 import { NftCard } from "@/components/NftCard";
 import { Toaster } from "@/components/ui/sonner";
 import { useOwnedNfts } from "@/hooks/useLitdex";
@@ -127,7 +128,7 @@ function LevelsView() {
               </button>
             </div>
           ) : isLoading ? (
-            <p className="btn-text text-center text-black/50">Scanning token IDs…</p>
+            <LoadingBlock label="Scanning token IDs…" />
           ) : list.length === 0 ? (
             <div className="btn-text rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-8 text-center text-black/50">
               {data && data.length > 0

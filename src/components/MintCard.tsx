@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ImageLightbox } from "@/components/ImageLightbox";
+import { Spinner } from "@/components/ui/reui-spinner";
 import {
   nftRead,
   useMintInfo,
@@ -33,13 +34,16 @@ export function MintCard() {
   );
 
   const [passIndex, setPassIndex] = useState(0);
+  const [loadedPasses, setLoadedPasses] = useState<string[]>([]);
+  const passesReady = loadedPasses.length >= PASS_CARD_IMAGES.length;
   useEffect(() => {
+    if (!passesReady) return;
     const timer = setInterval(
       () => setPassIndex((i) => (i + 1) % PASS_CARD_IMAGES.length),
       2600,
     );
     return () => clearInterval(timer);
-  }, []);
+  }, [passesReady]);
   const activePass =
     PASS_CARD_IMAGES[passIndex] ?? PASS_CARD_IMAGES[0] ?? null;
 
@@ -98,11 +102,27 @@ export function MintCard() {
                 key={pass.label}
                 src={pass.src}
                 alt={`Litdex pass card — ${pass.label}`}
+                onLoad={() =>
+                  setLoadedPasses((prev) =>
+                    prev.includes(pass.label) ? prev : [...prev, pass.label],
+                  )
+                }
+                onError={() =>
+                  setLoadedPasses((prev) =>
+                    prev.includes(pass.label) ? prev : [...prev, pass.label],
+                  )
+                }
                 className={`absolute inset-0 size-full object-cover transition-opacity duration-[900ms] ease-in-out ${
-                  i === passIndex ? "z-10 opacity-100" : "z-0 opacity-0"
+                  i === passIndex && passesReady ? "z-10 opacity-100" : "z-0 opacity-0"
                 }`}
               />
             ))}
+            {!passesReady && (
+              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-[#F4F4F2]">
+                <Spinner className="size-8 text-[#0038FF]" />
+                <p className="btn-text text-black/50">Loading pass cards…</p>
+              </div>
+            )}
           </div>
         </ImageLightbox>
         <div className="mt-3 flex items-center justify-center gap-2">

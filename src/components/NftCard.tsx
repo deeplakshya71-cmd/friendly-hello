@@ -2,6 +2,8 @@ import { ethers } from "ethers";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { LoadingImage } from "@/components/LoadingImage";
+import { Spinner } from "@/components/ui/reui-spinner";
 import { COMMON_PFP, EPIC_PFP, LEGEND_PFP, RARE_PFP } from "@/lib/images";
 import {
   usdtRead,
@@ -159,13 +161,15 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
     <div className="flex flex-col gap-4 rounded-[2rem] border border-[#0038FF]/15 bg-[#0038FF]/5 p-6 shadow-xl backdrop-blur-md">
 
       {artLoading ? (
-        <div className="aspect-square w-full animate-pulse rounded-3xl bg-black/10" />
+        <div className="flex aspect-square w-full items-center justify-center rounded-3xl border-[3px] border-white bg-black/5">
+          <Spinner className="size-8 text-[#0038FF]" />
+        </div>
       ) : artwork ? (
-        <img
+        <LoadingImage
           src={artwork}
           alt={`Litdex champion #${nft.tokenId.toString()}`}
-          loading="lazy"
-          className="w-full rounded-3xl border-[3px] border-white object-contain shadow-md"
+          wrapperClassName="aspect-square w-full overflow-hidden rounded-3xl border-[3px] border-white bg-black/5 shadow-md"
+          className="size-full object-contain"
         />
       ) : null}
 
