@@ -21,7 +21,7 @@ export function PointsSection() {
 
   return (
     <div className="flex flex-col rounded-[2rem] bg-[#F4F4F2] p-6 md:p-8">
-      <h3 className="btn-text text-center text-black">
+      <h3 className="btn-heading text-center text-black">
         Claim your points
       </h3>
       <p className="btn-text mt-2 text-center text-black/50">

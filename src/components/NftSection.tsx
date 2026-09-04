@@ -10,7 +10,7 @@ export function NftSection() {
 
   return (
     <section id="champions" className="mt-16 scroll-mt-8 space-y-6">
-      <h2 className="btn-text text-center text-black">
+      <h2 className="btn-heading text-center text-black">
         My <span className="text-[#0038FF]">champions</span>
       </h2>
       {isLoading && <p className="btn-text text-center text-black/50">Scanning token IDs…</p>}
