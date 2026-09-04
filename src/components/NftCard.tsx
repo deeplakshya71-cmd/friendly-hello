@@ -7,6 +7,7 @@ import {
   useBasePoints,
   useGameConfig,
   useLevelCost,
+  useNftArtwork,
   useRefreshAll,
 } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";

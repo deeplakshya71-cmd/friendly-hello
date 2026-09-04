@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { useMintInfo, useRefreshAll, usdtRead } from "@/hooks/useLitdex";
+import {
+  nftRead,
+  useMintInfo,
+  useNftArtwork,
+  useRefreshAll,
+  usdtRead,
+} from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
 import {
   NFT_ADDRESS,

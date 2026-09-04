@@ -127,9 +127,7 @@ export function useNftArtwork(tokenId: bigint | undefined) {
         : uri;
       let image: string | null = null;
       if (httpUri.startsWith("data:application/json")) {
-        const json = JSON.parse(
-          Buffer.from(httpUri.split(",")[1] ?? "", "base64").toString("utf-8"),
-        );
+        const json = JSON.parse(atob(httpUri.split(",")[1] ?? ""));
         image = json.image ?? null;
       } else {
         const res = await fetch(httpUri);
