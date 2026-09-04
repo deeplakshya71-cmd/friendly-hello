@@ -100,7 +100,7 @@ function LevelsView() {
     <div className="min-h-screen bg-[#0038FF] px-4 py-12">
       <div className="mx-auto max-w-6xl rounded-[2.5rem] bg-white p-6 md:p-10">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="btn-heading heading-ul">Levels</h1>
+          <h1 className="btn-heading heading-ul text-black">Levels</h1>
           <Link to="/" className="btn fx-9 btn-pill btn-blue">
             <span className="btn-label">Back</span>
           </Link>
