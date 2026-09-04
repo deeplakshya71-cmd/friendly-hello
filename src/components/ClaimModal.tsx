@@ -146,7 +146,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
             {available !== null && (
               <button
                 type="button"
-                className="text-xs font-semibold text-[#CCFF00] hover:underline"
+                className="btn-text text-xs font-semibold text-[#CCFF00] hover:underline"
                 disabled={busy}
                 onClick={() => setAmount(available.toString())}
               >
