@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import {
   usdtRead,
   useBasePoints,

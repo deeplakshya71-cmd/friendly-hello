@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import {
   nftRead,
   useMintInfo,
