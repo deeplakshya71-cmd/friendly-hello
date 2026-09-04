@@ -178,9 +178,10 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
       ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div
-            className="size-12 rounded-full border-[3px] border-white shadow-inner"
-            style={{ backgroundColor: rarityColor }}
+          <img
+            src={RARITY_IMAGE[nft.rarity] ?? commonPfp.url}
+            alt={`${RARITY_NAMES[nft.rarity] ?? "Common"} rarity logo`}
+            className="size-12 rounded-full border-[3px] border-white bg-white object-cover shadow-inner"
           />
           <div>
             <p className="font-mono text-xs text-black/50">#{nft.tokenId.toString()}</p>
