@@ -6,7 +6,7 @@ export function LevelCard() {
 
   return (
     <div id="levels" className="flex scroll-mt-8 flex-col rounded-[2rem] bg-[#F4F4F2] p-6 md:p-8">
-      <h3 className="btn-heading text-center text-black">
+      <h3 className="btn-heading heading-ul text-center text-black">
         Level up & rise
       </h3>
       <p className="btn-text mt-2 text-center text-black/50">
