@@ -2,7 +2,6 @@ import { ethers } from "ethers";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ImageLightbox } from "@/components/ImageLightbox";
 import commonPfp from "@/assets/cpfp.png.asset.json";
 import epicPfp from "@/assets/epfp.png.asset.json";
 import legendPfp from "@/assets/lpfp.png.asset.json";
@@ -164,17 +163,12 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
       {artLoading ? (
         <div className="aspect-square w-full animate-pulse rounded-3xl bg-black/10" />
       ) : artwork ? (
-        <ImageLightbox
+        <img
           src={artwork}
           alt={`Litdex champion #${nft.tokenId.toString()}`}
-        >
-          <img
-            src={artwork}
-            alt={`Litdex champion #${nft.tokenId.toString()}`}
-            loading="lazy"
-            className="w-full rounded-3xl border-[3px] border-white object-contain shadow-md"
-          />
-        </ImageLightbox>
+          loading="lazy"
+          className="w-full rounded-3xl border-[3px] border-white object-contain shadow-md"
+        />
       ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
