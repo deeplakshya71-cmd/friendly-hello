@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
 import { HERO_EPIC_IMAGE, HERO_LEGEND_IMAGE } from "@/lib/images";
-import litdexLogo from "@/assets/litdex-logo.png.asset.json";
 import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/litdex";
 
@@ -77,24 +76,22 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
       <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,#ffffff15_1px,transparent_1px),linear-gradient(to_bottom,#ffffff15_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
       <nav className="relative z-20 mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-6 md:px-10 md:py-8">
-        <div className="flex flex-col items-start gap-2">
-          <div className="flex items-center gap-1">
-            <div className="relative rounded-2xl rounded-bl-sm bg-white px-3 py-1.5 text-xs font-black tracking-tight text-black shadow-sm md:text-sm">
-              {onBase ? "BASE" : "LITDEX"}
-              <div
-                className="absolute -bottom-1.5 left-0 h-3 w-3 bg-white"
-                style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
-              ></div>
-            </div>
-            <div className="rounded-full border-[1.5px] border-white bg-[#CCFF00] px-3 py-1.5 text-xs font-black text-black shadow-sm md:text-sm">
-              {onBase ? "MAINNET" : "TESTNET"}
-            </div>
-          </div>
+        <div className="flex items-center gap-1">
           <img
-            src={litdexLogo.url}
-            alt="Litdex LD logo"
-            className="h-9 w-auto rounded-lg border border-white/25 shadow-md md:h-12"
+            src="/favicon-512x512.png"
+            alt="Litdex logo"
+            className="h-8 w-8 rounded-lg shadow-sm md:h-10 md:w-10"
           />
+          <div className="relative rounded-2xl rounded-bl-sm bg-white px-3 py-1.5 text-xs font-black tracking-tight text-black shadow-sm md:text-sm">
+            {onBase ? "BASE" : "LITDEX"}
+            <div
+              className="absolute -bottom-1.5 left-0 h-3 w-3 bg-white"
+              style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }}
+            ></div>
+          </div>
+          <div className="rounded-full border-[1.5px] border-white bg-[#CCFF00] px-3 py-1.5 text-xs font-black text-black shadow-sm md:text-sm">
+            {onBase ? "MAINNET" : "TESTNET"}
+          </div>
         </div>
 
         <div className="hidden items-center space-x-2 md:flex">
