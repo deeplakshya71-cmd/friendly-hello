@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles } from "lucide-react";
 import { useState } from "react";
 import { ClaimModal } from "@/components/ClaimModal";
 import { useWallet } from "@/hooks/useWallet";
@@ -48,9 +47,10 @@ export function PointsSection() {
           </div>
           <button
             onClick={() => setOpen(true)}
-            className="flex items-center gap-1.5 rounded-full bg-[#CCFF00] px-5 py-2.5 text-sm font-bold text-black transition-transform hover:scale-105"
+            className="btn fx-9"
+            style={{ backgroundColor: "#CCFF00" }}
           >
-            <Sparkles className="size-4" /> Claim
+            <span className="btn-label">Claim</span>
           </button>
         </div>
       </div>
