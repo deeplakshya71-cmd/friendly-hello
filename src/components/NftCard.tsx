@@ -54,18 +54,18 @@ function PillButton({
   disabled?: boolean;
   variant?: "lime" | "blue" | "ghost";
 }) {
-  const styles = {
-    lime: "bg-[#CCFF00] text-black",
-    blue: "bg-[#0038FF] text-white",
-    ghost: "border border-black/20 bg-transparent text-black",
+  const variantClass = {
+    lime: "btn-lime",
+    blue: "btn-blue",
+    ghost: "btn-ghost",
   }[variant];
   return (
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`w-full rounded-full px-4 py-2.5 text-sm font-bold shadow-md transition-transform hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100 ${styles}`}
+      className={`btn fx-9 btn-pill ${variantClass} w-full`}
     >
-      {children}
+      <span className="btn-label">{children}</span>
     </button>
   );
 }
