@@ -64,6 +64,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
   const { data: points } = useBasePoints();
   const { data: config } = useGameConfig();
   const { data: levelCost } = useLevelCost(nft.level);
+  const { data: artwork, isLoading: artLoading } = useNftArtwork(nft.tokenId);
   const [busy, setBusy] = useState<string | null>(null);
   const [recipient, setRecipient] = useState("");
 

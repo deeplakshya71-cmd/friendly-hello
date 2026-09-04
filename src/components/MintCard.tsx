@@ -21,6 +21,10 @@ export function MintCard() {
   const { data, isLoading } = useMintInfo();
   const refreshAll = useRefreshAll();
   const [status, setStatus] = useState<string | null>(null);
+  const [mintedId, setMintedId] = useState<bigint | null>(null);
+  const { data: mintedArt, isLoading: mintedArtLoading } = useNftArtwork(
+    mintedId ?? undefined,
+  );
 
   const soldOut = !!data && data.minted >= data.cap;
   const busy = status !== null;
