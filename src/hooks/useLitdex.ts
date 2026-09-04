@@ -114,6 +114,37 @@ export function useLevelCost(level: number) {
   });
 }
 
+export function useNftArtwork(tokenId: bigint | undefined) {
+  return useQuery({
+    queryKey: ["nftArtwork", tokenId?.toString()],
+    enabled: tokenId !== undefined,
+    retry: false,
+    staleTime: Infinity,
+    queryFn: async (): Promise<string | null> => {
+      const uri = await nftRead().tokenURI(tokenId!);
+      const httpUri = uri.startsWith("ipfs://")
+        ? uri.replace("ipfs://", "https://ipfs.io/ipfs/")
+        : uri;
+      let image: string | null = null;
+      if (httpUri.startsWith("data:application/json")) {
+        const json = JSON.parse(
+          Buffer.from(httpUri.split(",")[1] ?? "", "base64").toString("utf-8"),
+        );
+        image = json.image ?? null;
+      } else {
+        const res = await fetch(httpUri);
+        if (!res.ok) return null;
+        const json = await res.json();
+        image = json.image ?? null;
+      }
+      if (image && image.startsWith("ipfs://")) {
+        image = image.replace("ipfs://", "https://ipfs.io/ipfs/");
+      }
+      return image;
+    },
+  });
+}
+
 export function useRefreshAll() {
   const qc = useQueryClient();
   return useCallback(async () => {
