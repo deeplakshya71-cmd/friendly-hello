@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ImageLightbox } from "@/components/ImageLightbox";
+import { Spinner } from "@/components/ui/reui-spinner";
 import {
   nftRead,
   useMintInfo,
@@ -33,13 +34,16 @@ export function MintCard() {
   );
 
   const [passIndex, setPassIndex] = useState(0);
+  const [loadedPasses, setLoadedPasses] = useState<string[]>([]);
+  const passesReady = loadedPasses.length >= PASS_CARD_IMAGES.length;
   useEffect(() => {
+    if (!passesReady) return;
     const timer = setInterval(
       () => setPassIndex((i) => (i + 1) % PASS_CARD_IMAGES.length),
       2600,
     );
     return () => clearInterval(timer);
-  }, []);
+  }, [passesReady]);
   const activePass =
     PASS_CARD_IMAGES[passIndex] ?? PASS_CARD_IMAGES[0] ?? null;
 
