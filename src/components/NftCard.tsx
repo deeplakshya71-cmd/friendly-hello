@@ -159,13 +159,8 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
   const rarityColor = RARITY_COLOR[nft.rarity] ?? "#A8A0BE";
 
   return (
-    <div
-      className="flex flex-col gap-4 rounded-[2rem] border-2 bg-[#0a0a0f] p-6 shadow-2xl"
-      style={{
-        borderColor: `${rarityColor}40`,
-        boxShadow: `0 0 28px -4px ${rarityColor}30`,
-      }}
-    >
+    <div className="flex flex-col gap-4 rounded-[2rem] border border-[#0038FF]/15 bg-[#0038FF]/5 p-6 shadow-xl backdrop-blur-md">
+
       {artLoading ? (
         <div className="aspect-square w-full animate-pulse rounded-3xl bg-black/10" />
       ) : artwork ? (
@@ -173,10 +168,10 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
           src={artwork}
           alt={`Litdex champion #${nft.tokenId.toString()}`}
           loading="lazy"
-          className="w-full rounded-3xl border-[3px] object-contain shadow-md"
-          style={{ borderColor: `${rarityColor}80` }}
+          className="w-full rounded-3xl border-[3px] border-white object-contain shadow-md"
         />
       ) : null}
+
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <img
@@ -185,9 +180,10 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
             className="size-12 object-contain"
           />
           <div>
-            <p className="btn-text text-white/50">#{nft.tokenId.toString().padStart(4, "0")}</p>
-            <p className="btn-text text-white">TIER {nft.level}</p>
+            <p className="btn-text text-black/50">#{nft.tokenId.toString().padStart(4, "0")}</p>
+            <p className="btn-text text-black">TIER {nft.level}</p>
           </div>
+
         </div>
         <div className="flex flex-col items-end gap-1.5">
           <span
@@ -205,11 +201,11 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
       </div>
 
       {!compact && (
-      <div className="space-y-2 border-t border-white/10 pt-4">
+      <div className="space-y-2 border-t border-black/10 pt-4">
         {atMax ? (
           <>
-            <p className="btn-text text-white/60">Max level — promote instead</p>
-            <p className="btn-text text-white/50">
+            <p className="btn-text text-black/60">Max level — promote instead</p>
+            <p className="btn-text text-black/50">
               {nft.gamesAtMaxLevel}/{gamesRequired?.toString() ?? "…"} games
               {promoteReady ? " — ready" : ""}
             </p>
@@ -223,9 +219,9 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
           </>
         ) : (
           <>
-            <p className="btn-text text-white/60">
+            <p className="btn-text text-black/60">
               Level up cost:{" "}
-              <span className="btn-text text-white">
+              <span className="btn-text text-black">
                 {levelCost !== undefined ? formatPoints(levelCost) : "…"} pts
               </span>
             </p>
@@ -237,10 +233,11 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
             </PillButton>
             {nft.damaged && <p className="btn-text text-[#FF4D4D]">Repair before leveling up.</p>}
             {!nft.damaged && !canAfford && (
-              <p className="btn-text text-white/50">Not enough Base points.</p>
+              <p className="btn-text text-black/50">Not enough Base points.</p>
             )}
           </>
         )}
+
 
         {nft.damaged && (
           <PillButton variant="blue" disabled={disabled} onClick={() => void handleRepair()}>
