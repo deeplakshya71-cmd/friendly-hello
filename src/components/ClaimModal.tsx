@@ -104,13 +104,10 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
     <Dialog open={open} onOpenChange={(v) => (busy ? null : onOpenChange(v))}>
       <DialogContent className="rounded-[2rem] border-white/30 bg-[#0038FF]/85 text-white shadow-2xl backdrop-blur-xl">
         <DialogHeader>
-          <DialogTitle
-            className="text-xl font-black tracking-tight text-[#CCFF00] uppercase"
-            style={{ fontFamily: '"Arial Black", Impact, sans-serif' }}
-          >
+          <DialogTitle className="btn-text text-[#CCFF00]">
             Claim from LitVM
           </DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogDescription className="btn-text text-white/70">
             Burn points on LitVM and mint them as spendable points on Base Sepolia.
           </DialogDescription>
         </DialogHeader>
@@ -131,7 +128,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="claim-amount" className="text-sm text-white/70">
+            <label htmlFor="claim-amount" className="btn-text text-white/70">
               Amount to convert
             </label>
             <Input
@@ -155,7 +152,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
             )}
           </div>
 
-          {error && <p className="text-sm font-semibold text-[#FF8080]">{error}</p>}
+          {error && <p className="btn-text text-[#FF8080]">{error}</p>}
 
           <NetworkSwitcher tone="dark" />
 
@@ -170,7 +167,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
                   />
                 ))}
               </div>
-              <p className="text-sm font-bold text-white">{stepLabel}…</p>
+              <p className="btn-text text-white">{stepLabel}…</p>
             </div>
           ) : (
             <Button
@@ -182,7 +179,7 @@ export function ClaimModal({ open, onOpenChange }: { open: boolean; onOpenChange
             </Button>
           )}
           {!correctNetwork && (
-            <p className="text-center text-xs font-semibold text-[#FF8080]">
+            <p className="btn-text text-center text-[#FF8080]">
               Claiming on-chain requires Base Sepolia.
             </p>
           )}
