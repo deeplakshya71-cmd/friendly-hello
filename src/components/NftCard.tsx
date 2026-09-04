@@ -3,10 +3,10 @@ import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ImageLightbox } from "@/components/ImageLightbox";
-import commonPfp from "@/assets/commonpfp.png.asset.json";
-import epicPfp from "@/assets/epicpfp.png.asset.json";
-import legendPfp from "@/assets/legendpfp.png.asset.json";
-import rarePfp from "@/assets/rarepfp.png.asset.json";
+import commonPfp from "@/assets/cpfp.png.asset.json";
+import epicPfp from "@/assets/epfp.png.asset.json";
+import legendPfp from "@/assets/lpfp.png.asset.json";
+import rarePfp from "@/assets/rpfp.png.asset.json";
 import {
   usdtRead,
   useBasePoints,
@@ -181,7 +181,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
           <img
             src={RARITY_IMAGE[nft.rarity] ?? commonPfp.url}
             alt={`${RARITY_NAMES[nft.rarity] ?? "Common"} rarity logo`}
-            className="size-12 rounded-full border-[3px] border-white bg-white object-cover shadow-inner"
+            className="size-12 object-contain"
           />
           <div>
             <p className="font-mono text-xs text-black/50">#{nft.tokenId.toString()}</p>
