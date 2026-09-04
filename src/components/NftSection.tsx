@@ -44,11 +44,10 @@ function RarityFilter({
         onClick={() => setOpen((o) => !o)}
         aria-label="Filter champions by rarity"
         aria-expanded={open}
-        className="btn fx-9 btn-pill btn-blue"
+        className="btn fx-9 btn-pill btn-blue !px-3.5"
       >
-        <span className="btn-label flex items-center gap-2">
+        <span className="btn-label flex items-center">
           <Menu className="size-4" />
-          Filter
         </span>
       </button>
       {open && (
