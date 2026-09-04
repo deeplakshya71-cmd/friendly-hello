@@ -66,9 +66,9 @@ function Dashboard() {
                   <span className="btn-label">switch to base</span>
                 </button>
               )}
-              <div id="points" className="grid scroll-mt-24 gap-6 md:grid-cols-3">
+              <MintCard />
+              <div id="points" className="mt-6 grid scroll-mt-24 gap-6 md:grid-cols-2">
                 <PointsSection />
-                <MintCard />
                 <LevelCard />
               </div>
               <NftSection />
