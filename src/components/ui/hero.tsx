@@ -156,14 +156,14 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               className="pointer-events-auto absolute bottom-[10%] left-[5%] z-30 md:left-[20%]"
             >
-              <div className="flex aspect-[3/3.5] w-40 rotate-[-12deg] items-center justify-center rounded-[2rem] border border-white/40 bg-white/20 p-4 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-0 md:w-52">
+              <div className="aspect-square w-40 rotate-[-12deg] overflow-hidden rounded-[2rem] border border-white/40 bg-white/20 shadow-2xl transition-transform duration-500 hover:rotate-0 md:w-52">
                 <img
-                  src={championCommon}
-                  alt="Common tier Litdex champion"
+                  src={epicAsset.url}
+                  alt="Litdex Epic champion board pass"
                   loading="lazy"
-                  width={768}
-                  height={896}
-                  className="h-full w-full object-contain drop-shadow-lg"
+                  width={1254}
+                  height={1254}
+                  className="h-full w-full object-cover"
                 />
               </div>
             </motion.div>
@@ -173,14 +173,14 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
               className="pointer-events-auto absolute top-[34%] right-[2%] z-30 md:top-[32%] md:right-[18%]"
             >
-              <div className="flex aspect-[3/3.5] w-40 rotate-[12deg] items-center justify-center rounded-[2rem] border border-white/40 bg-white/20 p-4 shadow-2xl backdrop-blur-md transition-transform duration-500 hover:rotate-0 md:w-52">
+              <div className="aspect-square w-40 rotate-[12deg] overflow-hidden rounded-[2rem] border border-white/40 bg-white/20 shadow-2xl transition-transform duration-500 hover:rotate-0 md:w-52">
                 <img
-                  src={championRare}
-                  alt="Rare tier Litdex champion"
+                  src={legendAsset.url}
+                  alt="Litdex Legend champion board pass"
                   loading="lazy"
-                  width={768}
-                  height={896}
-                  className="h-full w-full object-contain drop-shadow-lg"
+                  width={1254}
+                  height={1254}
+                  className="h-full w-full object-cover"
                 />
               </div>
             </motion.div>
