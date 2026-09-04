@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
-import epicAsset from "@/assets/litdex-epic-home.png.asset.json";
-import legendAsset from "@/assets/litdex-legend-home.png.asset.json";
+import { HERO_EPIC_IMAGE, HERO_LEGEND_IMAGE } from "@/lib/images";
 import { useWallet } from "@/hooks/useWallet";
 import { truncateAddress } from "@/lib/litdex";
 
@@ -159,7 +158,7 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
             >
               <div className="aspect-square w-40 rotate-[-12deg] overflow-hidden rounded-[2rem] border border-white/40 bg-white/20 shadow-2xl transition-transform duration-500 hover:rotate-0 md:w-52">
                 <img
-                  src={epicAsset.url}
+                  src={HERO_EPIC_IMAGE}
                   alt="Litdex Epic champion board pass"
                   loading="lazy"
                   width={1254}
@@ -176,7 +175,7 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
             >
               <div className="aspect-square w-40 rotate-[12deg] overflow-hidden rounded-[2rem] border border-white/40 bg-white/20 shadow-2xl transition-transform duration-500 hover:rotate-0 md:w-52">
                 <img
-                  src={legendAsset.url}
+                  src={HERO_LEGEND_IMAGE}
                   alt="Litdex Legend champion board pass"
                   loading="lazy"
                   width={1254}
