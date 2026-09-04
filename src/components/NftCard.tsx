@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ImageLightbox } from "@/components/ImageLightbox";
 import {
   usdtRead,
   useBasePoints,
@@ -148,16 +149,21 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
   const rarityColor = RARITY_COLOR[nft.rarity] ?? "#A8A0BE";
 
   return (
-    <div className="flex flex-col gap-4 rounded-[2rem] border border-[#0038FF]/15 bg-[#0038FF]/5 p-6 shadow-xl backdrop-blur-md transition-transform duration-500 hover:-rotate-1">
+    <div className="flex flex-col gap-4 rounded-[2rem] border border-[#0038FF]/15 bg-[#0038FF]/5 p-6 shadow-xl backdrop-blur-md">
       {artLoading ? (
         <div className="aspect-square w-full animate-pulse rounded-3xl bg-black/10" />
       ) : artwork ? (
-        <img
+        <ImageLightbox
           src={artwork}
           alt={`Litdex champion #${nft.tokenId.toString()}`}
-          loading="lazy"
-          className="aspect-square w-full rounded-3xl border-[3px] border-white object-cover shadow-md"
-        />
+        >
+          <img
+            src={artwork}
+            alt={`Litdex champion #${nft.tokenId.toString()}`}
+            loading="lazy"
+            className="w-full rounded-3xl border-[3px] border-white object-contain shadow-md"
+          />
+        </ImageLightbox>
       ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
