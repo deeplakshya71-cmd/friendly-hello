@@ -217,6 +217,30 @@
   border-radius: 9999px;
 }
 
+.btn-lime {
+  --bink: #000000;
+  --bsurf: #ccff00;
+  background-color: #ccff00;
+}
+
+.btn-blue {
+  --bink: #ffffff;
+  --bsurf: #0038ff;
+  background-color: #0038ff;
+}
+
+.btn-ghost {
+  --bink: #ffffff;
+  --bsurf: transparent;
+  background-color: transparent;
+}
+
+.btn-white {
+  --bink: #0038ff;
+  --bsurf: #ffffff;
+  background-color: #ffffff;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .btn,
   .btn::before,
