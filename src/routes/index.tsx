@@ -61,9 +61,9 @@ function Dashboard() {
               {!correctNetwork && (
                 <button
                   onClick={() => void switchNetwork()}
-                  className="btn-text mb-8 w-full rounded-[2rem] border-2 border-[#FF4D4D]/40 bg-[#FF4D4D]/10 px-6 py-4 text-left text-[#D43232]"
+                  className="btn fx-9 btn-pill btn-blue mb-8 w-full"
                 >
-                  Wrong network — click to switch to Base Sepolia.
+                  <span className="btn-label">switch to base</span>
                 </button>
               )}
               <div id="points" className="grid scroll-mt-24 gap-6 md:grid-cols-3">
