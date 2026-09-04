@@ -70,7 +70,7 @@ function PillButton({
   );
 }
 
-export function NftCard({ nft }: { nft: OwnedNft }) {
+export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boolean }) {
   const { address, getSigner, correctNetwork } = useWallet();
   const refreshAll = useRefreshAll();
   const { data: points } = useBasePoints();
