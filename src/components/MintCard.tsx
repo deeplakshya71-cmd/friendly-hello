@@ -71,6 +71,23 @@ export function MintCard() {
         ${data ? formatUsdt(data.price) : "…"} USDT · Common rarity to start.
       </p>
 
+      {mintedId !== null && (
+        <div className="mt-6 flex flex-col items-center gap-2">
+          {mintedArtLoading ? (
+            <div className="aspect-square w-full max-w-56 animate-pulse rounded-3xl bg-black/10" />
+          ) : mintedArt ? (
+            <img
+              src={mintedArt}
+              alt={`Minted champion #${mintedId.toString()}`}
+              className="w-full max-w-56 rounded-3xl border-[3px] border-white object-cover shadow-lg"
+            />
+          ) : null}
+          <p className="font-mono text-xs font-bold text-black/60">
+            Champion #{mintedId.toString()} minted!
+          </p>
+        </div>
+      )}
+
       <div className="mt-auto flex flex-col items-center gap-3 pt-8">
         <div className="rounded-full bg-[#CCFF00] px-6 py-3 shadow-lg">
           <p className="font-mono text-sm font-bold text-black">
