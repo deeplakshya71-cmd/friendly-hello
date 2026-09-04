@@ -173,7 +173,8 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
           src={artwork}
           alt={`Litdex champion #${nft.tokenId.toString()}`}
           loading="lazy"
-          className="w-full rounded-3xl border-[3px] border-white object-contain shadow-md"
+          className="w-full rounded-3xl border-[3px] object-contain shadow-md"
+          style={{ borderColor: `${rarityColor}80` }}
         />
       ) : null}
       <div className="flex items-start justify-between gap-3">
@@ -184,8 +185,8 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
             className="size-12 object-contain"
           />
           <div>
-            <p className="btn-text text-black/50">#{nft.tokenId.toString().padStart(4, "0")}</p>
-            <p className="btn-text text-black">TIER {nft.level}</p>
+            <p className="btn-text text-white/50">#{nft.tokenId.toString().padStart(4, "0")}</p>
+            <p className="btn-text text-white">TIER {nft.level}</p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1.5">
