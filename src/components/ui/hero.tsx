@@ -51,7 +51,7 @@ const CircularBadge = ({ onClick }: { onClick?: () => void }) => (
             textLength="226"
             lengthAdjust="spacing"
           >
-            MINT A CHAMPION • MINT A CHAMPION •
+            MINT A CHAMPION • MINT A CHAMPION •&nbsp;
           </textPath>
         </text>
       </svg>
@@ -203,7 +203,7 @@ export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
               <ArrowGreenLeft />
             </div>
 
-            <div className="absolute top-[5%] right-[0%] z-20 h-24 w-24 md:right-[10%] md:h-32 md:w-32">
+            <div className="absolute top-[6%] right-[-6%] z-20 h-20 w-20 md:top-[4%] md:right-[1%] md:h-28 md:w-28">
               <ArrowGreenRight />
             </div>
 
