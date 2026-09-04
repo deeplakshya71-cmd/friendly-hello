@@ -2,7 +2,6 @@ import { ethers } from "ethers";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ImageLightbox } from "@/components/ImageLightbox";
 import commonPfp from "@/assets/cpfp.png.asset.json";
 import epicPfp from "@/assets/epfp.png.asset.json";
 import legendPfp from "@/assets/lpfp.png.asset.json";
