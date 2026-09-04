@@ -43,13 +43,10 @@ function Dashboard() {
         <div className="mx-auto max-w-6xl">
           {!address ? (
             <div className="rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-10 text-center">
-              <p
-                className="text-2xl font-black tracking-tight text-black uppercase"
-                style={{ fontFamily: '"Arial Black", Impact, sans-serif' }}
-              >
+              <p className="btn-text text-black">
                 Connect your wallet to get started
               </p>
-              <p className="mt-2 text-sm text-black/50">
+              <p className="btn-text mt-2 text-black/50">
                 Litdex runs on Base Sepolia (chain 84532).
               </p>
               <button
@@ -64,7 +61,7 @@ function Dashboard() {
               {!correctNetwork && (
                 <button
                   onClick={() => void switchNetwork()}
-                  className="mb-8 w-full rounded-[2rem] border-2 border-[#FF4D4D]/40 bg-[#FF4D4D]/10 px-6 py-4 text-left text-sm font-semibold text-[#D43232]"
+                  className="btn-text mb-8 w-full rounded-[2rem] border-2 border-[#FF4D4D]/40 bg-[#FF4D4D]/10 px-6 py-4 text-left text-[#D43232]"
                 >
                   Wrong network — click to switch to Base Sepolia.
                 </button>

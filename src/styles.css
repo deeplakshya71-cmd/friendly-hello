@@ -213,6 +213,12 @@
   box-shadow: 0 8px 0 -2px color-mix(in srgb, var(--bink) 30%, transparent);
 }
 
+/* Blue buttons use a black lift shadow just like lime buttons */
+.btn-blue.fx-9:hover,
+.btn-blue.fx-9:active {
+  box-shadow: 0 8px 0 -2px color-mix(in srgb, #000000 30%, transparent);
+}
+
 .btn:disabled,
 .btn[aria-disabled="true"] {
   cursor: not-allowed;

@@ -6,13 +6,10 @@ export function LevelCard() {
 
   return (
     <div id="levels" className="flex scroll-mt-8 flex-col rounded-[2rem] bg-[#F4F4F2] p-6 md:p-8">
-      <h3
-        className="text-center text-xl font-black tracking-tight text-black uppercase md:text-2xl"
-        style={{ fontFamily: '"Arial Black", Impact, sans-serif' }}
-      >
+      <h3 className="btn-text text-center text-black">
         Level up & rise
       </h3>
-      <p className="mt-2 text-center text-sm text-black/50">
+      <p className="btn-text mt-2 text-center text-black/50">
         Spend points to grow Common to Legend.
       </p>
 
