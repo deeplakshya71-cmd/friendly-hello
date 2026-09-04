@@ -205,6 +205,7 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
         </div>
       </div>
 
+      {!compact && (
       <div className="space-y-2 border-t border-black/10 pt-4">
         {atMax ? (
           <>
