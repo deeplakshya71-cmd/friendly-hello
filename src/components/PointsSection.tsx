@@ -28,27 +28,23 @@ export function PointsSection() {
         Points earned on LitVM convert to Base.
       </p>
 
-      <div className="mt-auto flex items-center justify-center pt-8">
-        <div className="flex items-center gap-2 rounded-full bg-[#0038FF] p-1.5 pr-2 shadow-lg">
-          <div className="rounded-full bg-white/15 px-4 py-2">
-            <p className="btn-text font-bold text-white">
-              {litvm.isLoading
-                ? "…"
-                : litvm.isError
-                  ? "—"
-                  : formatPoints(litvm.data?.litvmAvailable ?? "0")}
-            </p>
-            <p className="btn-text text-[10px] font-semibold text-white/70">
-              LitVM available
-            </p>
-          </div>
-          <button
-            onClick={() => setOpen(true)}
-            className="btn fx-9 btn-pill btn-lime"
-          >
-            <span className="btn-label">Claim</span>
-          </button>
+      <div className="mt-auto flex flex-col items-center gap-3 pt-8">
+        <div className="rounded-full bg-[#0038FF] px-6 py-3 shadow-lg">
+          <p className="btn-text font-bold text-white">
+            {litvm.isLoading
+              ? "…"
+              : litvm.isError
+                ? "—"
+                : formatPoints(litvm.data?.litvmAvailable ?? "0")}{" "}
+            <span className="text-white/70">LitVM available</span>
+          </p>
         </div>
+        <button
+          onClick={() => setOpen(true)}
+          className="btn fx-9 btn-pill btn-lime w-full text-center"
+        >
+          <span className="btn-label">Claim</span>
+        </button>
       </div>
 
       <ClaimModal open={open} onOpenChange={setOpen} />
