@@ -77,6 +77,24 @@ export const Route = createFileRoute("/levels")({
 function LevelsView() {
   const { address, connect } = useWallet();
   const { data, isLoading } = useOwnedNfts();
+  const [rarity, setRarity] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [sort, setSort] = useState("highest");
+
+  const list = useMemo<OwnedNft[]>(() => {
+    let out = [...(data ?? [])];
+    if (rarity !== "all") out = out.filter((n) => n.rarity === Number(rarity));
+    if (status === "damaged") out = out.filter((n) => n.damaged);
+    if (status === "healthy") out = out.filter((n) => !n.damaged);
+    out.sort((a, b) => {
+      if (sort === "highest") {
+        if (a.rarity !== b.rarity) return b.rarity - a.rarity;
+        if (a.level !== b.level) return b.level - a.level;
+      }
+      return a.tokenId > b.tokenId ? -1 : a.tokenId < b.tokenId ? 1 : 0;
+    });
+    return out;
+  }, [data, rarity, status, sort]);
 
   return (
     <div className="min-h-screen bg-[#0038FF] px-4 py-12">
@@ -87,6 +105,15 @@ function LevelsView() {
             <span className="btn-label">Back</span>
           </Link>
         </div>
+
+        {address && (
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Select label="Filter by rarity" value={rarity} onChange={setRarity} options={RARITY_OPTIONS} />
+            <Select label="Filter by status" value={status} onChange={setStatus} options={STATUS_OPTIONS} />
+            <Select label="Sort champions" value={sort} onChange={setSort} options={SORT_OPTIONS} />
+          </div>
+        )}
+
 
         <div className="mt-10 space-y-8">
           {!address ? (
