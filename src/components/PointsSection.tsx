@@ -34,14 +34,14 @@ export function PointsSection() {
       <div className="mt-auto flex items-center justify-center pt-8">
         <div className="flex items-center gap-2 rounded-full bg-[#0038FF] p-1.5 pr-2 shadow-lg">
           <div className="rounded-full bg-white/15 px-4 py-2">
-            <p className="font-mono text-sm font-bold text-white">
+            <p className="btn-text font-bold text-white">
               {litvm.isLoading
                 ? "…"
                 : litvm.isError
                   ? "—"
                   : formatPoints(litvm.data?.litvmAvailable ?? "0")}
             </p>
-            <p className="text-[10px] font-semibold tracking-wider text-white/70 uppercase">
+            <p className="btn-text text-[10px] font-semibold text-white/70">
               LitVM available
             </p>
           </div>
