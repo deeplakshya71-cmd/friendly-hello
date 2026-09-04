@@ -77,11 +77,16 @@ export function MintCard() {
           {mintedArtLoading ? (
             <div className="aspect-square w-full max-w-56 animate-pulse rounded-3xl bg-black/10" />
           ) : mintedArt ? (
-            <img
+            <ImageLightbox
               src={mintedArt}
               alt={`Minted champion #${mintedId.toString()}`}
-              className="w-full max-w-56 rounded-3xl border-[3px] border-white object-cover shadow-lg"
-            />
+            >
+              <img
+                src={mintedArt}
+                alt={`Minted champion #${mintedId.toString()}`}
+                className="w-full max-w-56 rounded-3xl border-[3px] border-white object-contain shadow-lg"
+              />
+            </ImageLightbox>
           ) : null}
           <p className="font-mono text-xs font-bold text-black/60">
             Champion #{mintedId.toString()} minted!
