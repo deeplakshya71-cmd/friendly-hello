@@ -63,6 +63,7 @@ export const NFT_ABI = [
   "function ownerOf(uint256 tokenId) view returns (address)",
   "function balanceOf(address owner) view returns (uint256)",
   "function tokenState(uint256 tokenId) view returns (uint8 rarity, uint8 level, bool damaged, uint32 gamesAtMaxLevel)",
+  "function tokenURI(uint256 tokenId) view returns (string)",
   "function nextTokenId() view returns (uint256)",
   "function pointsPerLevel(uint8 level) view returns (uint256)",
   "function commonSupplyCap() view returns (uint256)",
@@ -133,6 +134,7 @@ export interface NftContract extends ethers.BaseContract {
   ownerOf(tokenId: bigint): Promise<string>;
   balanceOf(owner: string): Promise<bigint>;
   tokenState(tokenId: bigint): Promise<[bigint, bigint, boolean, bigint]>;
+  tokenURI(tokenId: bigint): Promise<string>;
   nextTokenId(): Promise<bigint>;
   pointsPerLevel(level: number): Promise<bigint>;
   commonSupplyCap(): Promise<bigint>;

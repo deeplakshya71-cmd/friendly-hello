@@ -7,6 +7,7 @@ import {
   useBasePoints,
   useGameConfig,
   useLevelCost,
+  useNftArtwork,
   useRefreshAll,
 } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
@@ -63,6 +64,7 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
   const { data: points } = useBasePoints();
   const { data: config } = useGameConfig();
   const { data: levelCost } = useLevelCost(nft.level);
+  const { data: artwork, isLoading: artLoading } = useNftArtwork(nft.tokenId);
   const [busy, setBusy] = useState<string | null>(null);
   const [recipient, setRecipient] = useState("");
 
@@ -147,6 +149,16 @@ export function NftCard({ nft }: { nft: OwnedNft }) {
 
   return (
     <div className="flex flex-col gap-4 rounded-[2rem] border border-[#0038FF]/15 bg-[#0038FF]/5 p-6 shadow-xl backdrop-blur-md transition-transform duration-500 hover:-rotate-1">
+      {artLoading ? (
+        <div className="aspect-square w-full animate-pulse rounded-3xl bg-black/10" />
+      ) : artwork ? (
+        <img
+          src={artwork}
+          alt={`Litdex champion #${nft.tokenId.toString()}`}
+          loading="lazy"
+          className="aspect-square w-full rounded-3xl border-[3px] border-white object-cover shadow-md"
+        />
+      ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div

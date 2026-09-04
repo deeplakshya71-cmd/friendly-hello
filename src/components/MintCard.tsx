@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { useMintInfo, useRefreshAll, usdtRead } from "@/hooks/useLitdex";
+import {
+  nftRead,
+  useMintInfo,
+  useNftArtwork,
+  useRefreshAll,
+  usdtRead,
+} from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
 import {
   NFT_ADDRESS,
@@ -15,6 +21,10 @@ export function MintCard() {
   const { data, isLoading } = useMintInfo();
   const refreshAll = useRefreshAll();
   const [status, setStatus] = useState<string | null>(null);
+  const [mintedId, setMintedId] = useState<bigint | null>(null);
+  const { data: mintedArt, isLoading: mintedArtLoading } = useNftArtwork(
+    mintedId ?? undefined,
+  );
 
   const soldOut = !!data && data.minted >= data.cap;
   const busy = status !== null;
@@ -34,6 +44,12 @@ export function MintCard() {
       const nft = nftContract(signer);
       const tx = await nft.mint();
       await tx.wait();
+      try {
+        const next = await nftRead().nextTokenId();
+        if (next > 1n) setMintedId(next - 1n);
+      } catch {
+        // artwork is optional
+      }
       await refreshAll();
       toast.success("NFT minted");
     } catch (err) {
@@ -54,6 +70,23 @@ export function MintCard() {
       <p className="mt-2 text-center text-sm text-black/50">
         ${data ? formatUsdt(data.price) : "…"} USDT · Common rarity to start.
       </p>
+
+      {mintedId !== null && (
+        <div className="mt-6 flex flex-col items-center gap-2">
+          {mintedArtLoading ? (
+            <div className="aspect-square w-full max-w-56 animate-pulse rounded-3xl bg-black/10" />
+          ) : mintedArt ? (
+            <img
+              src={mintedArt}
+              alt={`Minted champion #${mintedId.toString()}`}
+              className="w-full max-w-56 rounded-3xl border-[3px] border-white object-cover shadow-lg"
+            />
+          ) : null}
+          <p className="font-mono text-xs font-bold text-black/60">
+            Champion #{mintedId.toString()} minted!
+          </p>
+        </div>
+      )}
 
       <div className="mt-auto flex flex-col items-center gap-3 pt-8">
         <div className="rounded-full bg-[#CCFF00] px-6 py-3 shadow-lg">
