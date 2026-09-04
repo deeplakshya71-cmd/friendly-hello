@@ -205,11 +205,11 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
       </div>
 
       {!compact && (
-      <div className="space-y-2 border-t border-black/10 pt-4">
+      <div className="space-y-2 border-t border-white/10 pt-4">
         {atMax ? (
           <>
-            <p className="btn-text text-black/60">Max level — promote instead</p>
-            <p className="btn-text text-black/50">
+            <p className="btn-text text-white/60">Max level — promote instead</p>
+            <p className="btn-text text-white/50">
               {nft.gamesAtMaxLevel}/{gamesRequired?.toString() ?? "…"} games
               {promoteReady ? " — ready" : ""}
             </p>
@@ -223,9 +223,9 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
           </>
         ) : (
           <>
-            <p className="btn-text text-black/60">
+            <p className="btn-text text-white/60">
               Level up cost:{" "}
-              <span className="btn-text text-black">
+              <span className="btn-text text-white">
                 {levelCost !== undefined ? formatPoints(levelCost) : "…"} pts
               </span>
             </p>
@@ -237,7 +237,7 @@ export function NftCard({ nft, compact = false }: { nft: OwnedNft; compact?: boo
             </PillButton>
             {nft.damaged && <p className="btn-text text-[#FF4D4D]">Repair before leveling up.</p>}
             {!nft.damaged && !canAfford && (
-              <p className="btn-text text-black/50">Not enough Base points.</p>
+              <p className="btn-text text-white/50">Not enough Base points.</p>
             )}
           </>
         )}
