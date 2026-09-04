@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import {
@@ -10,7 +10,7 @@ import {
   usdtRead,
 } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
-import { COMMON_PFP } from "@/lib/images";
+import { PASS_CARD_IMAGES } from "@/lib/images";
 import {
   NFT_ADDRESS,
   formatUsdt,
@@ -31,6 +31,15 @@ export function MintCard() {
   const { data: mintedArt, isLoading: mintedArtLoading } = useNftArtwork(
     mintedId ?? undefined,
   );
+
+  const [passIndex, setPassIndex] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(
+      () => setPassIndex((i) => (i + 1) % PASS_CARD_IMAGES.length),
+      2600,
+    );
+    return () => clearInterval(timer);
+  }, []);
 
   const soldOut = !!data && data.minted >= data.cap;
   const busy = status !== null;
@@ -76,13 +85,40 @@ export function MintCard() {
       id="mint"
       className="grid scroll-mt-24 gap-6 rounded-[2rem] bg-[#F4F4F2] p-4 md:grid-cols-2 md:p-6"
     >
-      <ImageLightbox src={mintedArt ?? COMMON_PFP} alt="Common Litdex champion">
-        <img
-          src={mintedArt ?? COMMON_PFP}
-          alt="Common Litdex champion"
-          className="aspect-square w-full rounded-[1.5rem] border-[3px] border-white object-cover shadow-xl"
-        />
-      </ImageLightbox>
+      <div className="relative">
+        <ImageLightbox
+          src={PASS_CARD_IMAGES[passIndex].src}
+          alt={`Litdex pass card — ${PASS_CARD_IMAGES[passIndex].label}`}
+        >
+          <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] border-[3px] border-white bg-black/5 shadow-xl">
+            {PASS_CARD_IMAGES.map((pass, i) => (
+              <img
+                key={pass.label}
+                src={pass.src}
+                alt={`Litdex pass card — ${pass.label}`}
+                className={`absolute inset-0 size-full object-cover transition-opacity duration-[900ms] ease-in-out ${
+                  i === passIndex ? "z-10 opacity-100" : "z-0 opacity-0"
+                }`}
+              />
+            ))}
+          </div>
+        </ImageLightbox>
+        <div className="mt-3 flex items-center justify-center gap-2">
+          {PASS_CARD_IMAGES.map((pass, i) => (
+            <span
+              key={pass.label}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                i === passIndex
+                  ? "w-6 bg-[#0038FF]"
+                  : "w-1.5 bg-black/20"
+              }`}
+            />
+          ))}
+          <span className="ml-2 font-mono text-[11px] font-bold uppercase tracking-wide text-black/50">
+            {PASS_CARD_IMAGES[passIndex].label}
+          </span>
+        </div>
+      </div>
 
       <div className="flex flex-col p-2 md:p-4">
         <h3 className="btn-heading heading-ul text-black">Mint a champion</h3>
