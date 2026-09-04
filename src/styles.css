@@ -146,7 +146,16 @@
   }
 }
 
-/* Lift button style — used by the Claim button */
+/* Shared button text style */
+.btn-text {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Lift button style — used by clickable action buttons */
 .btn {
   --primary: #ccff00;
   --secondary: #000000;
@@ -155,11 +164,6 @@
   --bsurf: var(--surface);
   position: relative;
   isolation: isolate;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   padding: 13px 24px;
   border: 1px solid var(--bink);
   border-radius: 8px;
@@ -169,6 +173,15 @@
   overflow: hidden;
   white-space: nowrap;
   transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn,
+.btn-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .btn-label {
