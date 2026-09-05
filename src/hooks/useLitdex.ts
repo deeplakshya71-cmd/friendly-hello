@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useCallback } from "react";
 import { useWallet } from "./useWallet";
 import {
+  API_BASE,
   CONFIG_GAMES_REQUIRED,
   CONFIG_REPAIR_COST,
   nftContract,
@@ -44,6 +45,32 @@ export function useMintInfo() {
       return { price, cap, minted };
     },
     refetchInterval: 30000,
+  });
+}
+
+export type MintStatus = {
+  totalMinted: number;
+  supplyCap: number;
+  publicMintStart: number;
+  publicMintStarted: boolean;
+  walletPublicMintCount: number;
+  walletLimitReached: boolean;
+  priceUSDT: string;
+};
+
+export function useMintStatus() {
+  const { address } = useWallet();
+  return useQuery({
+    queryKey: ["mintStatus", address],
+    enabled: !!address,
+    refetchInterval: 15000,
+    retry: false,
+    queryFn: async (): Promise<MintStatus> => {
+      const res = await fetch(`${API_BASE}/mint-status/${address}`);
+      const json = (await res.json()) as MintStatus & { error?: string };
+      if (!res.ok || json.error) throw new Error(json.error ?? "mint status failed");
+      return json;
+    },
   });
 }
 

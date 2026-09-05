@@ -3,9 +3,8 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/reui-spinner";
 import {
   nftRead,
-  useMintInfo,
+  useMintStatus,
   useNftArtwork,
-  useOwnedNfts,
   useRefreshAll,
   usdtRead,
 } from "@/hooks/useLitdex";
@@ -19,12 +18,21 @@ import {
   usdtContract,
 } from "@/lib/litdex";
 
-const WALLET_LIMIT = 10;
+const WALLET_LIMIT = 2;
+
+function formatCountdown(msLeft: number) {
+  const total = Math.max(0, Math.floor(msLeft / 1000));
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return d > 0 ? `${d}d ${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
 
 export function MintCard() {
   const { address, getSigner, correctNetwork } = useWallet();
-  const { data, isLoading } = useMintInfo();
-  const { data: owned } = useOwnedNfts();
+  const { data: mintStatus, isLoading, refetch: refetchStatus } = useMintStatus();
   const refreshAll = useRefreshAll();
   const [status, setStatus] = useState<string | null>(null);
   const [mintedId, setMintedId] = useState<bigint | null>(null);
@@ -46,24 +54,36 @@ export function MintCard() {
   const activePass =
     PASS_CARD_IMAGES[passIndex] ?? PASS_CARD_IMAGES[0] ?? null;
 
-  const soldOut = !!data && data.minted >= data.cap;
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const started = mintStatus?.publicMintStarted ?? false;
+  const startsAt = (mintStatus?.publicMintStart ?? 0) * 1000;
+  const countdown =
+    startsAt > 0 ? formatCountdown(startsAt - now) : null;
+  const price = mintStatus ? BigInt(mintStatus.priceUSDT) : null;
+  const soldOut =
+    !!mintStatus && mintStatus.supplyCap > 0 && mintStatus.totalMinted >= mintStatus.supplyCap;
   const busy = status !== null;
-  const ownedCount = owned?.length ?? 0;
-  const limitReached = ownedCount >= WALLET_LIMIT;
+  const ownedCount = mintStatus?.walletPublicMintCount ?? 0;
+  const limitReached = mintStatus?.walletLimitReached ?? false;
   const progress =
-    data && data.cap > 0n
-      ? Number((data.minted * 1000n) / data.cap) / 10
+    mintStatus && mintStatus.supplyCap > 0
+      ? (mintStatus.totalMinted / mintStatus.supplyCap) * 100
       : 0;
 
   async function handleMint() {
-    if (!address || !data) return;
+    if (!address || price === null) return;
     try {
       const allowance = await usdtRead().allowance(address, NFT_ADDRESS);
       const signer = await getSigner();
-      if (allowance < data.price) {
+      if (allowance < price) {
         setStatus("Approving…");
         const usdt = usdtContract(signer);
-        const approveTx = await usdt.approve(NFT_ADDRESS, data.price);
+        const approveTx = await usdt.approve(NFT_ADDRESS, price);
         await approveTx.wait();
       }
       setStatus("Minting…");
@@ -77,6 +97,7 @@ export function MintCard() {
         // artwork is optional
       }
       await refreshAll();
+      await refetchStatus();
       toast.success("NFT minted");
     } catch (err) {
       toast.error(parseWalletError(err, "Mint failed, try again."));
@@ -148,9 +169,9 @@ export function MintCard() {
               Items minted
             </p>
             <p className="btn-text text-xs font-bold text-black">
-              {isLoading || !data
+              {isLoading || !mintStatus
                 ? "…"
-                : `${data.minted.toString()} / ${data.cap.toString()}`}
+                : `${mintStatus.totalMinted} / ${mintStatus.supplyCap}`}
             </p>
           </div>
           <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-black/10">
@@ -166,11 +187,11 @@ export function MintCard() {
             <div>
               <p className="btn-text font-bold text-black">Public stage</p>
               <p className="mt-1 font-mono text-sm font-bold text-black">
-                ${data ? formatUsdt(data.price) : "…"} USDT
+                ${price !== null ? formatUsdt(price) : "…"} USDT
               </p>
               <p className="mt-1 flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#0038FF]">
                 <span className="inline-block size-2 rounded-full bg-[#CCFF00] ring-2 ring-[#0038FF]/30" />
-                MINTING NOW
+                {started ? "MINTING NOW" : "NOT STARTED"}
               </p>
             </div>
             <button
@@ -179,7 +200,8 @@ export function MintCard() {
                 !correctNetwork ||
                 soldOut ||
                 busy ||
-                !data ||
+                !mintStatus ||
+                !started ||
                 limitReached
               }
               onClick={() => void handleMint()}
@@ -188,15 +210,19 @@ export function MintCard() {
               <span className="btn-label">
                 {soldOut
                   ? "Sold out"
-                  : limitReached
-                    ? "Limit reached"
-                    : (status ?? "Mint")}
+                  : !started
+                    ? countdown
+                      ? `Starts in ${countdown}`
+                      : "Not started"
+                    : limitReached
+                      ? "Limit reached"
+                      : (status ??
+                        `Mint now · $${price !== null ? formatUsdt(price) : "…"} USDT`)}
               </span>
             </button>
           </div>
           <p className="mt-3 text-right font-mono text-[11px] font-bold tracking-wide text-black/40">
-            LIMIT {WALLET_LIMIT} PER WALLET
-            {address ? ` · YOU OWN ${ownedCount}` : ""}
+            LIMIT {WALLET_LIMIT} PER WALLET · YOU OWN {ownedCount}
           </p>
         </div>
 
