@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ImageLightbox } from "@/components/ImageLightbox";
 import { Spinner } from "@/components/ui/reui-spinner";
 import {
   nftRead,
