@@ -257,12 +257,13 @@ export function MintCard() {
           </div>
         </div>
 
-        {voucherData && voucherData.totalVouchers > 0 && (
+        {address && voucherData && voucherData.totalVouchers > 0 && (
           <div className="mt-6 rounded-[1.25rem] border-2 border-[#0038FF]/20 bg-white p-4 md:p-5">
             <p className="inline-flex items-center gap-2 rounded-full bg-[#CCFF00] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wide text-black">
-              Whitelist eligible — {voucherData.totalVouchers} discounted mint
+              Whitelist eligible · {voucherData.totalVouchers} discounted mint
               {voucherData.totalVouchers === 1 ? "" : "s"} available
             </p>
+
             <div className="mt-4 flex flex-col gap-2">
               {voucherGroups.map(([category, vouchers]) => {
                 const qty = Math.min(qtyFor(category), vouchers.length);
