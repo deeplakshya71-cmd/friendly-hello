@@ -173,7 +173,19 @@ export function MintCard() {
                 ? "…"
                 : `${mintStatus.totalMinted} / ${mintStatus.supplyCap}`}
             </p>
-...
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-black/10">
+            <div
+              className="h-full rounded-full bg-[#0038FF] transition-all"
+              style={{ width: `${Math.min(progress, 100)}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-[1.25rem] bg-white p-4 md:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="btn-text font-bold text-black">Public stage</p>
               <p className="mt-1 font-mono text-sm font-bold text-black">
                 ${price !== null ? formatUsdt(price) : "…"} USDT
               </p>
