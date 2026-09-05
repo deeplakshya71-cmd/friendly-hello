@@ -169,29 +169,17 @@ export function MintCard() {
               Items minted
             </p>
             <p className="btn-text text-xs font-bold text-black">
-              {isLoading || !data
+              {isLoading || !mintStatus
                 ? "…"
-                : `${data.minted.toString()} / ${data.cap.toString()}`}
+                : `${mintStatus.totalMinted} / ${mintStatus.supplyCap}`}
             </p>
-          </div>
-          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-black/10">
-            <div
-              className="h-full rounded-full bg-[#0038FF] transition-all"
-              style={{ width: `${Math.min(progress, 100)}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="mt-6 rounded-[1.25rem] bg-white p-4 md:p-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="btn-text font-bold text-black">Public stage</p>
+...
               <p className="mt-1 font-mono text-sm font-bold text-black">
-                ${data ? formatUsdt(data.price) : "…"} USDT
+                ${price !== null ? formatUsdt(price) : "…"} USDT
               </p>
               <p className="mt-1 flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#0038FF]">
                 <span className="inline-block size-2 rounded-full bg-[#CCFF00] ring-2 ring-[#0038FF]/30" />
-                MINTING NOW
+                {started ? "MINTING NOW" : "NOT STARTED"}
               </p>
             </div>
             <button
@@ -200,7 +188,8 @@ export function MintCard() {
                 !correctNetwork ||
                 soldOut ||
                 busy ||
-                !data ||
+                !mintStatus ||
+                !started ||
                 limitReached
               }
               onClick={() => void handleMint()}
@@ -209,15 +198,19 @@ export function MintCard() {
               <span className="btn-label">
                 {soldOut
                   ? "Sold out"
-                  : limitReached
-                    ? "Limit reached"
-                    : (status ?? "Mint")}
+                  : !started
+                    ? countdown
+                      ? `Starts in ${countdown}`
+                      : "Not started"
+                    : limitReached
+                      ? "Limit reached"
+                      : (status ??
+                        `Mint now · $${price !== null ? formatUsdt(price) : "…"} USDT`)}
               </span>
             </button>
           </div>
           <p className="mt-3 text-right font-mono text-[11px] font-bold tracking-wide text-black/40">
-            LIMIT {WALLET_LIMIT} PER WALLET
-            {address ? ` · YOU OWN ${ownedCount}` : ""}
+            LIMIT {WALLET_LIMIT} PER WALLET · YOU OWN {ownedCount}
           </p>
         </div>
 
