@@ -81,6 +81,16 @@ export function MintCard() {
       ? (mintStatus.totalMinted / mintStatus.supplyCap) * 100
       : 0;
 
+  const voucherGroups = (() => {
+    const map = new Map<string, Voucher[]>();
+    for (const v of voucherData?.vouchers ?? []) {
+      const key = v.category.toUpperCase();
+      map.set(key, [...(map.get(key) ?? []), v]);
+    }
+    return [...map.entries()];
+  })();
+
+
   async function handleMint() {
     if (!address || price === null) return;
     try {
@@ -204,7 +214,7 @@ export function MintCard() {
       <div className="flex flex-col p-2 md:p-4">
         <h3 className="btn-heading heading-ul text-black">Mint a champion</h3>
         <p className="btn-text mt-2 text-black/50">
-          Common rarity to start · Base Mainnet
+          Common rarity to start · Base Sepolia
         </p>
 
         <div className="mt-6">
@@ -232,30 +242,39 @@ export function MintCard() {
               Whitelist eligible — {voucherData.totalVouchers} discounted mint
               {voucherData.totalVouchers === 1 ? "" : "s"} available
             </p>
-            <div className="mt-4 flex flex-col gap-2">
-              {voucherData.vouchers.map((voucher) => (
-                <div
-                  key={`${voucher.category}-${voucher.nonce}`}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-[1rem] bg-[#F4F4F2] px-4 py-3"
-                >
-                  <div>
-                    <p className="btn-text text-sm font-bold uppercase text-black">
-                      {voucher.category}
-                    </p>
-                    <p className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-wide text-[#0038FF]">
-                      {discountLabel(voucher.discountBps)} off
-                      {price !== null
-                        ? ` · $${formatUsdt(discountedPrice(price, voucher.discountBps))} USDT`
-                        : ""}
-                    </p>
+            <div className="mt-4 flex flex-col gap-4">
+              {voucherGroups.map(([category, vouchers]) => (
+                <div key={category}>
+                  <p className="font-mono text-[11px] font-bold uppercase tracking-wide text-black/50">
+                    {category} · {vouchers.length}
+                  </p>
+                  <div className="mt-2 flex flex-col gap-2">
+                    {vouchers.map((voucher) => (
+                      <div
+                        key={`${voucher.category}-${voucher.nonce}`}
+                        className="flex flex-wrap items-center justify-between gap-3 rounded-[1rem] bg-[#F4F4F2] px-4 py-3"
+                      >
+                        <div>
+                          <p className="btn-text text-sm font-bold uppercase text-black">
+                            {voucher.category}
+                          </p>
+                          <p className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-wide text-[#0038FF]">
+                            {discountLabel(voucher.discountBps)} off
+                            {price !== null
+                              ? ` · $${formatUsdt(discountedPrice(price, voucher.discountBps))} USDT`
+                              : ""}
+                          </p>
+                        </div>
+                        <button
+                          disabled={!address || !correctNetwork || busy || price === null}
+                          onClick={() => void handleVoucherMint(voucher)}
+                          className="btn fx-9 btn-pill btn-blue"
+                        >
+                          <span className="btn-label">Mint</span>
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                  <button
-                    disabled={!address || !correctNetwork || busy || price === null}
-                    onClick={() => void handleVoucherMint(voucher)}
-                    className="btn fx-9 btn-pill btn-blue"
-                  >
-                    <span className="btn-label">Mint</span>
-                  </button>
                 </div>
               ))}
             </div>
