@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/reui-spinner";
+
 import {
   nftRead,
   useMintStatus,
@@ -90,6 +92,16 @@ export function MintCard() {
     return [...map.entries()];
   })();
 
+  const [qtyByCategory, setQtyByCategory] = useState<Record<string, number>>({});
+  const qtyFor = (category: string) => qtyByCategory[category] ?? 1;
+  const setQty = (category: string, next: number, max: number) =>
+    setQtyByCategory((prev) => ({
+      ...prev,
+      [category]: Math.max(1, Math.min(next, max)),
+    }));
+
+
+
 
   async function handleMint() {
     if (!address || price === null) return;
@@ -122,28 +134,34 @@ export function MintCard() {
     }
   }
 
-  async function handleVoucherMint(voucher: Voucher) {
-    if (!address || price === null) return;
-    const cost = discountedPrice(price, voucher.discountBps);
+  async function handleVoucherMint(vouchers: Voucher[]) {
+    if (!address || price === null || vouchers.length === 0) return;
+    const totalCost = vouchers.reduce(
+      (sum, v) => sum + discountedPrice(price, v.discountBps),
+      0n,
+    );
     try {
       const allowance = await usdtRead().allowance(address, NFT_ADDRESS);
       const signer = await getSigner();
-      if (allowance < cost) {
+      if (allowance < totalCost) {
         setStatus("Approving…");
-        const approveTx = await usdtContract(signer).approve(NFT_ADDRESS, cost);
+        const approveTx = await usdtContract(signer).approve(NFT_ADDRESS, totalCost);
         await approveTx.wait();
       }
-      setStatus("Minting…");
-      const tx = await nftContract(signer).mintWithVoucher(
-        [
-          voucherCategoryId(voucher.category),
-          voucher.wallet,
-          voucher.discountBps,
-          voucher.nonce,
-        ],
-        voucher.signature,
-      );
-      await tx.wait();
+      for (let i = 0; i < vouchers.length; i++) {
+        const voucher = vouchers[i]!;
+        setStatus(vouchers.length > 1 ? `Minting ${i + 1}/${vouchers.length}…` : "Minting…");
+        const tx = await nftContract(signer).mintWithVoucher(
+          [
+            voucherCategoryId(voucher.category),
+            voucher.wallet,
+            voucher.discountBps,
+            voucher.nonce,
+          ],
+          voucher.signature,
+        );
+        await tx.wait();
+      }
       try {
         const next = await nftRead().nextTokenId();
         if (next > 1n) setMintedId(next - 1n);
@@ -152,13 +170,16 @@ export function MintCard() {
       }
       await refreshAll();
       await Promise.all([refetchStatus(), refetchVouchers()]);
-      toast.success(`${voucher.category} minted with ${discountLabel(voucher.discountBps)} off`);
+      toast.success(
+        `${vouchers.length} ${vouchers[0]!.category} minted with ${discountLabel(vouchers[0]!.discountBps)} off`,
+      );
     } catch (err) {
       toast.error(parseWalletError(err, "Voucher mint failed, try again."));
     } finally {
       setStatus(null);
     }
   }
+
 
   return (
     <div
@@ -242,44 +263,63 @@ export function MintCard() {
               Whitelist eligible — {voucherData.totalVouchers} discounted mint
               {voucherData.totalVouchers === 1 ? "" : "s"} available
             </p>
-            <div className="mt-4 flex flex-col gap-4">
-              {voucherGroups.map(([category, vouchers]) => (
-                <div key={category}>
-                  <p className="font-mono text-[11px] font-bold uppercase tracking-wide text-black/50">
-                    {category} · {vouchers.length}
-                  </p>
-                  <div className="mt-2 flex flex-col gap-2">
-                    {vouchers.map((voucher) => (
-                      <div
-                        key={`${voucher.category}-${voucher.nonce}`}
-                        className="flex flex-wrap items-center justify-between gap-3 rounded-[1rem] bg-[#F4F4F2] px-4 py-3"
-                      >
-                        <div>
-                          <p className="btn-text text-sm font-bold uppercase text-black">
-                            {voucher.category}
-                          </p>
-                          <p className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-wide text-[#0038FF]">
-                            {discountLabel(voucher.discountBps)} off
-                            {price !== null
-                              ? ` · $${formatUsdt(discountedPrice(price, voucher.discountBps))} USDT`
-                              : ""}
-                          </p>
-                        </div>
+            <div className="mt-4 flex flex-col gap-2">
+              {voucherGroups.map(([category, vouchers]) => {
+                const qty = Math.min(qtyFor(category), vouchers.length);
+                const first = vouchers[0]!;
+                return (
+                  <div
+                    key={category}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-[1rem] bg-[#F4F4F2] px-4 py-3"
+                  >
+                    <div>
+                      <p className="btn-text text-sm font-bold uppercase text-black">
+                        {category} x {vouchers.length}
+                      </p>
+                      <p className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-wide text-[#0038FF]">
+                        {discountLabel(first.discountBps)} off
+                        {price !== null
+                          ? ` · $${formatUsdt(discountedPrice(price, first.discountBps))} USDT`
+                          : ""}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 rounded-full bg-white px-2 py-1">
                         <button
-                          disabled={!address || !correctNetwork || busy || price === null}
-                          onClick={() => void handleVoucherMint(voucher)}
-                          className="btn fx-9 btn-pill btn-blue"
+                          aria-label={`Decrease ${category} quantity`}
+                          disabled={qty <= 1 || busy}
+                          onClick={() => setQty(category, qty - 1, vouchers.length)}
+                          className="grid size-7 place-items-center rounded-full bg-black/5 text-black disabled:opacity-40"
                         >
-                          <span className="btn-label">Mint</span>
+                          <Minus className="size-3.5" />
+                        </button>
+                        <span className="min-w-5 text-center font-mono text-sm font-bold text-black">
+                          {qty}
+                        </span>
+                        <button
+                          aria-label={`Increase ${category} quantity`}
+                          disabled={qty >= vouchers.length || busy}
+                          onClick={() => setQty(category, qty + 1, vouchers.length)}
+                          className="grid size-7 place-items-center rounded-full bg-black/5 text-black disabled:opacity-40"
+                        >
+                          <Plus className="size-3.5" />
                         </button>
                       </div>
-                    ))}
+                      <button
+                        disabled={!address || !correctNetwork || busy || price === null}
+                        onClick={() => void handleVoucherMint(vouchers.slice(0, qty))}
+                        className="btn fx-9 btn-pill btn-blue"
+                      >
+                        <span className="btn-label">Mint</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
+
 
         <div className="mt-6 rounded-[1.25rem] bg-white p-4 md:p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
