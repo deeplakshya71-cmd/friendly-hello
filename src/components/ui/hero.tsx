@@ -69,7 +69,7 @@ const NAV_LINKS: Array<[string, string]> = [
 
 export const Component = ({ onMintClick }: { onMintClick?: () => void }) => {
   const { address, connect, connecting, hasWallet, disconnect, chainId } = useWallet();
-  const onBase = chainId === 8453;
+  const onBase = chainId === 84532;
 
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#0038FF] font-sans selection:bg-[#CCFF00] selection:text-black">
