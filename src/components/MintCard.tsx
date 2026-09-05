@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/reui-spinner";
+
 import {
   nftRead,
   useMintStatus,
