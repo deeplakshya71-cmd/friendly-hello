@@ -132,28 +132,34 @@ export function MintCard() {
     }
   }
 
-  async function handleVoucherMint(voucher: Voucher) {
-    if (!address || price === null) return;
-    const cost = discountedPrice(price, voucher.discountBps);
+  async function handleVoucherMint(vouchers: Voucher[]) {
+    if (!address || price === null || vouchers.length === 0) return;
+    const totalCost = vouchers.reduce(
+      (sum, v) => sum + discountedPrice(price, v.discountBps),
+      0n,
+    );
     try {
       const allowance = await usdtRead().allowance(address, NFT_ADDRESS);
       const signer = await getSigner();
-      if (allowance < cost) {
+      if (allowance < totalCost) {
         setStatus("Approving…");
-        const approveTx = await usdtContract(signer).approve(NFT_ADDRESS, cost);
+        const approveTx = await usdtContract(signer).approve(NFT_ADDRESS, totalCost);
         await approveTx.wait();
       }
-      setStatus("Minting…");
-      const tx = await nftContract(signer).mintWithVoucher(
-        [
-          voucherCategoryId(voucher.category),
-          voucher.wallet,
-          voucher.discountBps,
-          voucher.nonce,
-        ],
-        voucher.signature,
-      );
-      await tx.wait();
+      for (let i = 0; i < vouchers.length; i++) {
+        const voucher = vouchers[i]!;
+        setStatus(vouchers.length > 1 ? `Minting ${i + 1}/${vouchers.length}…` : "Minting…");
+        const tx = await nftContract(signer).mintWithVoucher(
+          [
+            voucherCategoryId(voucher.category),
+            voucher.wallet,
+            voucher.discountBps,
+            voucher.nonce,
+          ],
+          voucher.signature,
+        );
+        await tx.wait();
+      }
       try {
         const next = await nftRead().nextTokenId();
         if (next > 1n) setMintedId(next - 1n);
@@ -162,13 +168,16 @@ export function MintCard() {
       }
       await refreshAll();
       await Promise.all([refetchStatus(), refetchVouchers()]);
-      toast.success(`${voucher.category} minted with ${discountLabel(voucher.discountBps)} off`);
+      toast.success(
+        `${vouchers.length} ${vouchers[0]!.category} minted with ${discountLabel(vouchers[0]!.discountBps)} off`,
+      );
     } catch (err) {
       toast.error(parseWalletError(err, "Voucher mint failed, try again."));
     } finally {
       setStatus(null);
     }
   }
+
 
   return (
     <div
