@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const { address, correctNetwork, switchNetwork, connect } = useWallet();
+  const { address, correctNetwork, switchNetwork } = useWallet();
 
   const scrollToMint = () =>
     document.getElementById("mint")?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -42,20 +42,7 @@ function Dashboard() {
       <section className="relative z-20 -mt-10 rounded-t-[2.5rem] bg-white px-4 py-16 md:rounded-t-[4rem]">
         <div className="mx-auto max-w-6xl">
           {!address ? (
-            <div className="rounded-[2rem] border-2 border-dashed border-black/15 bg-[#F4F4F2] p-10 text-center">
-              <p className="btn-text text-black">
-                Connect your wallet to get started
-              </p>
-              <p className="btn-text mt-2 text-black/50">
-                Litdex runs on Base Sepolia (chain 84532).
-              </p>
-              <button
-                onClick={() => void connect()}
-                className="btn fx-9 btn-pill btn-lime mt-6"
-              >
-                <span className="btn-label">Connect wallet</span>
-              </button>
-            </div>
+            <MintCard />
           ) : (
             <>
               {!correctNetwork && (
@@ -74,6 +61,7 @@ function Dashboard() {
               <NftSection />
             </>
           )}
+
         </div>
       </section>
       <Toaster />
