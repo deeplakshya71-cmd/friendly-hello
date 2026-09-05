@@ -81,6 +81,16 @@ export function MintCard() {
       ? (mintStatus.totalMinted / mintStatus.supplyCap) * 100
       : 0;
 
+  const voucherGroups = (() => {
+    const map = new Map<string, Voucher[]>();
+    for (const v of voucherData?.vouchers ?? []) {
+      const key = v.category.toUpperCase();
+      map.set(key, [...(map.get(key) ?? []), v]);
+    }
+    return [...map.entries()];
+  })();
+
+
   async function handleMint() {
     if (!address || price === null) return;
     try {
