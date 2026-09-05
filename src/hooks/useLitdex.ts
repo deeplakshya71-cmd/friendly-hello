@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useCallback } from "react";
 import { useWallet } from "./useWallet";
 import {
+  API_BASE,
   CONFIG_GAMES_REQUIRED,
   CONFIG_REPAIR_COST,
   nftContract,
