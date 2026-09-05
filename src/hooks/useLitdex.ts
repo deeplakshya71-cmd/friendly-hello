@@ -47,6 +47,32 @@ export function useMintInfo() {
   });
 }
 
+export type MintStatus = {
+  totalMinted: number;
+  supplyCap: number;
+  publicMintStart: number;
+  publicMintStarted: boolean;
+  walletPublicMintCount: number;
+  walletLimitReached: boolean;
+  priceUSDT: string;
+};
+
+export function useMintStatus() {
+  const { address } = useWallet();
+  return useQuery({
+    queryKey: ["mintStatus", address],
+    enabled: !!address,
+    refetchInterval: 15000,
+    retry: false,
+    queryFn: async (): Promise<MintStatus> => {
+      const res = await fetch(`${API_BASE}/mint-status/${address}`);
+      const json = (await res.json()) as MintStatus & { error?: string };
+      if (!res.ok || json.error) throw new Error(json.error ?? "mint status failed");
+      return json;
+    },
+  });
+}
+
 export function useGameConfig() {
   return useQuery({
     queryKey: ["gameConfig"],
