@@ -97,6 +97,7 @@ export function MintCard() {
         // artwork is optional
       }
       await refreshAll();
+      await refetchStatus();
       toast.success("NFT minted");
     } catch (err) {
       toast.error(parseWalletError(err, "Mint failed, try again."));
