@@ -92,39 +92,34 @@ export function MintCard() {
       className="grid scroll-mt-24 gap-6 rounded-[2rem] bg-[#F4F4F2] p-4 md:grid-cols-2 md:p-6"
     >
       <div className="relative">
-        <ImageLightbox
-          src={activePass?.src ?? ""}
-          alt={`Litdex pass card — ${activePass?.label ?? ""}`}
-        >
-          <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] border-[3px] border-white bg-black/5 shadow-xl">
-            {PASS_CARD_IMAGES.map((pass, i) => (
-              <img
-                key={pass.label}
-                src={pass.src}
-                alt={`Litdex pass card — ${pass.label}`}
-                onLoad={() =>
-                  setLoadedPasses((prev) =>
-                    prev.includes(pass.label) ? prev : [...prev, pass.label],
-                  )
-                }
-                onError={() =>
-                  setLoadedPasses((prev) =>
-                    prev.includes(pass.label) ? prev : [...prev, pass.label],
-                  )
-                }
-                className={`absolute inset-0 size-full object-cover transition-opacity duration-[900ms] ease-in-out ${
-                  i === passIndex && passesReady ? "z-10 opacity-100" : "z-0 opacity-0"
-                }`}
-              />
-            ))}
-            {!passesReady && (
-              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-[#F4F4F2]">
-                <Spinner className="size-8 text-[#0038FF]" />
-                <p className="btn-text text-black/50">Loading pass cards…</p>
-              </div>
-            )}
-          </div>
-        </ImageLightbox>
+        <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] border-[3px] border-white bg-black/5 shadow-xl">
+          {PASS_CARD_IMAGES.map((pass, i) => (
+            <img
+              key={pass.label}
+              src={pass.src}
+              alt={`Litdex pass card — ${pass.label}`}
+              onLoad={() =>
+                setLoadedPasses((prev) =>
+                  prev.includes(pass.label) ? prev : [...prev, pass.label],
+                )
+              }
+              onError={() =>
+                setLoadedPasses((prev) =>
+                  prev.includes(pass.label) ? prev : [...prev, pass.label],
+                )
+              }
+              className={`absolute inset-0 size-full object-cover transition-opacity duration-[900ms] ease-in-out ${
+                i === passIndex && passesReady ? "z-10 opacity-100" : "z-0 opacity-0"
+              }`}
+            />
+          ))}
+          {!passesReady && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-[#F4F4F2]">
+              <Spinner className="size-8 text-[#0038FF]" />
+              <p className="btn-text text-black/50">Loading pass cards…</p>
+            </div>
+          )}
+        </div>
         <div className="mt-3 flex items-center justify-center gap-2">
           {PASS_CARD_IMAGES.map((pass, i) => (
             <span
