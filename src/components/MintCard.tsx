@@ -90,6 +90,16 @@ export function MintCard() {
     return [...map.entries()];
   })();
 
+  const [qtyByCategory, setQtyByCategory] = useState<Record<string, number>>({});
+  const qtyFor = (category: string) => qtyByCategory[category] ?? 1;
+  const setQty = (category: string, next: number, max: number) =>
+    setQtyByCategory((prev) => ({
+      ...prev,
+      [category]: Math.max(1, Math.min(next, max)),
+    }));
+
+
+
 
   async function handleMint() {
     if (!address || price === null) return;
