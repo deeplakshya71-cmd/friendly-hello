@@ -242,44 +242,63 @@ export function MintCard() {
               Whitelist eligible — {voucherData.totalVouchers} discounted mint
               {voucherData.totalVouchers === 1 ? "" : "s"} available
             </p>
-            <div className="mt-4 flex flex-col gap-4">
-              {voucherGroups.map(([category, vouchers]) => (
-                <div key={category}>
-                  <p className="font-mono text-[11px] font-bold uppercase tracking-wide text-black/50">
-                    {category} · {vouchers.length}
-                  </p>
-                  <div className="mt-2 flex flex-col gap-2">
-                    {vouchers.map((voucher) => (
-                      <div
-                        key={`${voucher.category}-${voucher.nonce}`}
-                        className="flex flex-wrap items-center justify-between gap-3 rounded-[1rem] bg-[#F4F4F2] px-4 py-3"
-                      >
-                        <div>
-                          <p className="btn-text text-sm font-bold uppercase text-black">
-                            {voucher.category}
-                          </p>
-                          <p className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-wide text-[#0038FF]">
-                            {discountLabel(voucher.discountBps)} off
-                            {price !== null
-                              ? ` · $${formatUsdt(discountedPrice(price, voucher.discountBps))} USDT`
-                              : ""}
-                          </p>
-                        </div>
+            <div className="mt-4 flex flex-col gap-2">
+              {voucherGroups.map(([category, vouchers]) => {
+                const qty = Math.min(qtyFor(category), vouchers.length);
+                const first = vouchers[0]!;
+                return (
+                  <div
+                    key={category}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-[1rem] bg-[#F4F4F2] px-4 py-3"
+                  >
+                    <div>
+                      <p className="btn-text text-sm font-bold uppercase text-black">
+                        {category} x {vouchers.length}
+                      </p>
+                      <p className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-wide text-[#0038FF]">
+                        {discountLabel(first.discountBps)} off
+                        {price !== null
+                          ? ` · $${formatUsdt(discountedPrice(price, first.discountBps))} USDT`
+                          : ""}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 rounded-full bg-white px-2 py-1">
                         <button
-                          disabled={!address || !correctNetwork || busy || price === null}
-                          onClick={() => void handleVoucherMint(voucher)}
-                          className="btn fx-9 btn-pill btn-blue"
+                          aria-label={`Decrease ${category} quantity`}
+                          disabled={qty <= 1 || busy}
+                          onClick={() => setQty(category, qty - 1, vouchers.length)}
+                          className="grid size-7 place-items-center rounded-full bg-black/5 text-black disabled:opacity-40"
                         >
-                          <span className="btn-label">Mint</span>
+                          <Minus className="size-3.5" />
+                        </button>
+                        <span className="min-w-5 text-center font-mono text-sm font-bold text-black">
+                          {qty}
+                        </span>
+                        <button
+                          aria-label={`Increase ${category} quantity`}
+                          disabled={qty >= vouchers.length || busy}
+                          onClick={() => setQty(category, qty + 1, vouchers.length)}
+                          className="grid size-7 place-items-center rounded-full bg-black/5 text-black disabled:opacity-40"
+                        >
+                          <Plus className="size-3.5" />
                         </button>
                       </div>
-                    ))}
+                      <button
+                        disabled={!address || !correctNetwork || busy || price === null}
+                        onClick={() => void handleVoucherMint(vouchers.slice(0, qty))}
+                        className="btn fx-9 btn-pill btn-blue"
+                      >
+                        <span className="btn-label">Mint</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
+
 
         <div className="mt-6 rounded-[1.25rem] bg-white p-4 md:p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
