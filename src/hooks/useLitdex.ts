@@ -61,21 +61,24 @@ export type MintStatus = {
   priceUSDT: string;
 };
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
 export function useMintStatus() {
   const { address } = useWallet();
+  const target = address ?? ZERO_ADDRESS;
   return useQuery({
-    queryKey: ["mintStatus", address],
-    enabled: !!address,
+    queryKey: ["mintStatus", target],
     refetchInterval: 15000,
     retry: false,
     queryFn: async (): Promise<MintStatus> => {
-      const res = await fetch(`${API_BASE}/mint-status/${address}`);
+      const res = await fetch(`${API_BASE}/mint-status/${target}`);
       const json = (await res.json()) as MintStatus & { error?: string };
       if (!res.ok || json.error) throw new Error(json.error ?? "mint status failed");
       return json;
     },
   });
 }
+
 
 export function useVouchers() {
   const { address } = useWallet();
