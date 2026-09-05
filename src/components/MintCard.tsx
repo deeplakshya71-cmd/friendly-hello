@@ -6,16 +6,21 @@ import {
   useMintStatus,
   useNftArtwork,
   useRefreshAll,
+  useVouchers,
   usdtRead,
 } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
 import { PASS_CARD_IMAGES } from "@/lib/images";
 import {
   NFT_ADDRESS,
+  discountLabel,
+  discountedPrice,
   formatUsdt,
   nftContract,
   parseWalletError,
   usdtContract,
+  voucherCategoryId,
+  type Voucher,
 } from "@/lib/litdex";
 
 const WALLET_LIMIT = 2;
