@@ -204,7 +204,7 @@ export function MintCard() {
       <div className="flex flex-col p-2 md:p-4">
         <h3 className="btn-heading heading-ul text-black">Mint a champion</h3>
         <p className="btn-text mt-2 text-black/50">
-          Common rarity to start · Base Sepolia
+          Common rarity to start · Base Mainnet
         </p>
 
         <div className="mt-6">
