@@ -54,24 +54,36 @@ export function MintCard() {
   const activePass =
     PASS_CARD_IMAGES[passIndex] ?? PASS_CARD_IMAGES[0] ?? null;
 
-  const soldOut = !!data && data.minted >= data.cap;
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  const started = mintStatus?.publicMintStarted ?? false;
+  const startsAt = (mintStatus?.publicMintStart ?? 0) * 1000;
+  const countdown =
+    startsAt > 0 ? formatCountdown(startsAt - now) : null;
+  const price = mintStatus ? BigInt(mintStatus.priceUSDT) : null;
+  const soldOut =
+    !!mintStatus && mintStatus.supplyCap > 0 && mintStatus.totalMinted >= mintStatus.supplyCap;
   const busy = status !== null;
-  const ownedCount = owned?.length ?? 0;
-  const limitReached = ownedCount >= WALLET_LIMIT;
+  const ownedCount = mintStatus?.walletPublicMintCount ?? 0;
+  const limitReached = mintStatus?.walletLimitReached ?? false;
   const progress =
-    data && data.cap > 0n
-      ? Number((data.minted * 1000n) / data.cap) / 10
+    mintStatus && mintStatus.supplyCap > 0
+      ? (mintStatus.totalMinted / mintStatus.supplyCap) * 100
       : 0;
 
   async function handleMint() {
-    if (!address || !data) return;
+    if (!address || price === null) return;
     try {
       const allowance = await usdtRead().allowance(address, NFT_ADDRESS);
       const signer = await getSigner();
-      if (allowance < data.price) {
+      if (allowance < price) {
         setStatus("Approving…");
         const usdt = usdtContract(signer);
-        const approveTx = await usdt.approve(NFT_ADDRESS, data.price);
+        const approveTx = await usdt.approve(NFT_ADDRESS, price);
         await approveTx.wait();
       }
       setStatus("Minting…");
