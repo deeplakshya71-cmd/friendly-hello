@@ -38,6 +38,7 @@ function formatCountdown(msLeft: number) {
 export function MintCard() {
   const { address, getSigner, correctNetwork } = useWallet();
   const { data: mintStatus, isLoading, refetch: refetchStatus } = useMintStatus();
+  const { data: voucherData, refetch: refetchVouchers } = useVouchers();
   const refreshAll = useRefreshAll();
   const [status, setStatus] = useState<string | null>(null);
   const [mintedId, setMintedId] = useState<bigint | null>(null);
