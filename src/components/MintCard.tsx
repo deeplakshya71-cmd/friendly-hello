@@ -112,6 +112,44 @@ export function MintCard() {
     }
   }
 
+  async function handleVoucherMint(voucher: Voucher) {
+    if (!address || price === null) return;
+    const cost = discountedPrice(price, voucher.discountBps);
+    try {
+      const allowance = await usdtRead().allowance(address, NFT_ADDRESS);
+      const signer = await getSigner();
+      if (allowance < cost) {
+        setStatus("Approving…");
+        const approveTx = await usdtContract(signer).approve(NFT_ADDRESS, cost);
+        await approveTx.wait();
+      }
+      setStatus("Minting…");
+      const tx = await nftContract(signer).mintWithVoucher(
+        [
+          voucherCategoryId(voucher.category),
+          voucher.wallet,
+          voucher.discountBps,
+          voucher.nonce,
+        ],
+        voucher.signature,
+      );
+      await tx.wait();
+      try {
+        const next = await nftRead().nextTokenId();
+        if (next > 1n) setMintedId(next - 1n);
+      } catch {
+        // artwork is optional
+      }
+      await refreshAll();
+      await Promise.all([refetchStatus(), refetchVouchers()]);
+      toast.success(`${voucher.category} minted with ${discountLabel(voucher.discountBps)} off`);
+    } catch (err) {
+      toast.error(parseWalletError(err, "Voucher mint failed, try again."));
+    } finally {
+      setStatus(null);
+    }
+  }
+
   return (
     <div
       id="mint"
