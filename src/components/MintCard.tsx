@@ -322,49 +322,81 @@ export function MintCard() {
         )}
 
 
-        <div className="mt-6 rounded-[1.25rem] bg-white p-4 md:p-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <p className="btn-text font-bold text-black">Public stage</p>
-              <p className="mt-1 font-mono text-sm font-bold text-black">
-                ${price !== null ? formatUsdt(price) : "…"} USDT
-              </p>
-              <p className="mt-1 flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#0038FF]">
+        {!address && (
+          <div className="mt-6 flex flex-col gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.25rem] bg-white p-4 md:p-5">
+              <p className="btn-text font-bold text-black">Whitelist mint</p>
+              <p className="flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase text-[#0038FF]">
                 <span className="inline-block size-2 rounded-full bg-[#CCFF00] ring-2 ring-[#0038FF]/30" />
-                {started ? "MINTING NOW" : "NOT STARTED"}
+                Open
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.25rem] bg-white p-4 md:p-5">
+              <p className="btn-text font-bold text-black">Public mint</p>
+              <p className="font-mono text-[11px] font-bold uppercase text-black/60">
+                {started
+                  ? "Live now"
+                  : countdown
+                    ? `Starts in ${countdown}`
+                    : "Not scheduled"}
               </p>
             </div>
             <button
-              disabled={
-                !address ||
-                !correctNetwork ||
-                soldOut ||
-                busy ||
-                !mintStatus ||
-                !started ||
-                limitReached
-              }
-              onClick={() => void handleMint()}
-              className="btn fx-9 btn-pill btn-blue"
+              onClick={() => void connect()}
+              disabled={connecting}
+              className="btn fx-9 btn-pill btn-blue w-full"
             >
               <span className="btn-label">
-                {soldOut
-                  ? "Sold out"
-                  : !started
-                    ? countdown
-                      ? `Starts in ${countdown}`
-                      : "Not started"
-                    : limitReached
-                      ? "Limit reached"
-                      : (status ??
-                        `Mint now · $${price !== null ? formatUsdt(price) : "…"} USDT`)}
+                {connecting ? "Connecting…" : "Connect wallet to mint"}
               </span>
             </button>
           </div>
-          <p className="mt-3 text-right font-mono text-[11px] font-bold tracking-wide text-black/40">
-            LIMIT {WALLET_LIMIT} PER WALLET · YOU OWN {ownedCount}
-          </p>
-        </div>
+        )}
+
+        {address && (
+          <div className="mt-6 rounded-[1.25rem] bg-white p-4 md:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="btn-text font-bold text-black">Public stage</p>
+                <p className="mt-1 font-mono text-sm font-bold text-black">
+                  ${price !== null ? formatUsdt(price) : "…"} USDT
+                </p>
+                <p className="mt-1 flex items-center gap-1.5 font-mono text-[11px] font-bold text-[#0038FF]">
+                  <span className="inline-block size-2 rounded-full bg-[#CCFF00] ring-2 ring-[#0038FF]/30" />
+                  {started ? "MINTING NOW" : "NOT STARTED"}
+                </p>
+              </div>
+              <button
+                disabled={
+                  !correctNetwork ||
+                  soldOut ||
+                  busy ||
+                  !mintStatus ||
+                  !started ||
+                  limitReached
+                }
+                onClick={() => void handleMint()}
+                className="btn fx-9 btn-pill btn-blue"
+              >
+                <span className="btn-label">
+                  {soldOut
+                    ? "Sold out"
+                    : !started
+                      ? countdown
+                        ? `Starts in ${countdown}`
+                        : "Not started"
+                      : limitReached
+                        ? "Limit reached"
+                        : (status ??
+                          `Mint now · $${price !== null ? formatUsdt(price) : "…"} USDT`)}
+                </span>
+              </button>
+            </div>
+            <p className="mt-3 text-right font-mono text-[11px] font-bold tracking-wide text-black/40">
+              LIMIT {WALLET_LIMIT} PER WALLET · YOU OWN {ownedCount}
+            </p>
+          </div>
+        )}
 
         {mintedId !== null && (
           <p className="mt-4 font-mono text-xs font-bold text-black/60">
@@ -373,12 +405,8 @@ export function MintCard() {
               : `Champion #${mintedId.toString()} minted!`}
           </p>
         )}
-        {!address && (
-          <p className="mt-4 text-xs text-black/50">
-            Connect your wallet to mint.
-          </p>
-        )}
       </div>
+
     </div>
   );
 }
