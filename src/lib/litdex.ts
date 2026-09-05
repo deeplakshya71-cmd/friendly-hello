@@ -9,13 +9,13 @@ export type ChainConfig = {
   blockExplorerUrls: string[];
 };
 
-export const BASE_SEPOLIA: ChainConfig = {
-  chainId: 84532,
-  chainIdHex: "0x14a34",
-  chainName: "Base Sepolia",
-  rpcUrls: ["https://sepolia.base.org"],
-  nativeCurrency: { name: "Sepolia Ether", symbol: "ETH", decimals: 18 },
-  blockExplorerUrls: ["https://sepolia.basescan.org"],
+export const BASE_MAINNET: ChainConfig = {
+  chainId: 8453,
+  chainIdHex: "0x2105",
+  chainName: "Base Mainnet",
+  rpcUrls: ["https://mainnet.base.org"],
+  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+  blockExplorerUrls: ["https://basescan.org"],
 };
 
 export const LITVM: ChainConfig = {
@@ -27,16 +27,18 @@ export const LITVM: ChainConfig = {
   blockExplorerUrls: ["https://liteforge.explorer.caldera.xyz"],
 };
 
-export const KNOWN_CHAINS: ChainConfig[] = [BASE_SEPOLIA, LITVM];
+export const KNOWN_CHAINS: ChainConfig[] = [BASE_MAINNET, LITVM];
 
 export function chainName(chainId: number | null): string {
   if (chainId === null) return "Unknown";
   return KNOWN_CHAINS.find((c) => c.chainId === chainId)?.chainName ?? `Chain ${chainId}`;
 }
 
-export const BASE_SEPOLIA_CHAIN_ID = BASE_SEPOLIA.chainId;
-export const BASE_SEPOLIA_HEX = BASE_SEPOLIA.chainIdHex;
+export const BASE_CHAIN_ID = BASE_MAINNET.chainId;
+export const BASE_CHAIN_HEX = BASE_MAINNET.chainIdHex;
+export const BASE_RPC_URL = BASE_MAINNET.rpcUrls[0]!;
 
+// TODO: swap in the new Base Mainnet deployment addresses when provided.
 export const USDT_ADDRESS = "0x02b8b8090dFFb61dE134A9e639577E9c153Ac871";
 export const POINTS_ADDRESS = "0x904b369740813dc56dE2fc457F60F832354427e0";
 export const NFT_ADDRESS = "0xd7E5A73D66D202CD211290536eab5096E8a5114F";
@@ -57,6 +59,7 @@ export const POINTS_ABI = [
 
 export const NFT_ABI = [
   "function mint() external",
+  "function mintWithVoucher((uint8 category,address wallet,uint256 discountBps,uint256 nonce) voucher, bytes signature) external",
   "function levelUp(uint256 tokenId) external",
   "function promote(uint256 tokenId) external",
   "function repair(uint256 tokenId) external",
@@ -106,13 +109,40 @@ export function formatPoints(value: bigint | string) {
 }
 
 export function openSeaUrl(tokenId: string | bigint) {
-  return `https://testnets.opensea.io/assets/base-sepolia/${NFT_ADDRESS}/${tokenId.toString()}`;
+  return `https://opensea.io/assets/base/${NFT_ADDRESS}/${tokenId.toString()}`;
 }
 
 export function parseWalletError(err: unknown, fallback: string) {
   const e = err as { code?: string | number; shortMessage?: string; message?: string };
   if (e?.code === "ACTION_REJECTED" || e?.code === 4001) return "Transaction rejected in wallet.";
   return fallback;
+}
+
+export type Voucher = {
+  category: string;
+  wallet: string;
+  discountBps: number;
+  nonce: string | number;
+  signature: string;
+};
+
+export type VoucherResponse = {
+  wallet: string;
+  totalVouchers: number;
+  vouchers: Voucher[];
+};
+
+export function voucherCategoryId(category: string): number {
+  const i = RARITY_NAMES.findIndex((r) => r.toLowerCase() === category.toLowerCase());
+  return i >= 0 ? i : 0;
+}
+
+export function discountLabel(discountBps: number) {
+  return `${discountBps / 100}%`;
+}
+
+export function discountedPrice(price: bigint, discountBps: number) {
+  return (price * BigInt(10000 - discountBps)) / 10000n;
 }
 
 export type OwnedNft = {
@@ -127,6 +157,10 @@ type Tx = ethers.ContractTransactionResponse;
 
 export interface NftContract extends ethers.BaseContract {
   mint(): Promise<Tx>;
+  mintWithVoucher(
+    voucher: [number, string, number, string | number],
+    signature: string,
+  ): Promise<Tx>;
   levelUp(tokenId: bigint): Promise<Tx>;
   promote(tokenId: bigint): Promise<Tx>;
   repair(tokenId: bigint): Promise<Tx>;

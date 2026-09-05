@@ -6,16 +6,21 @@ import {
   useMintStatus,
   useNftArtwork,
   useRefreshAll,
+  useVouchers,
   usdtRead,
 } from "@/hooks/useLitdex";
 import { useWallet } from "@/hooks/useWallet";
 import { PASS_CARD_IMAGES } from "@/lib/images";
 import {
   NFT_ADDRESS,
+  discountLabel,
+  discountedPrice,
   formatUsdt,
   nftContract,
   parseWalletError,
   usdtContract,
+  voucherCategoryId,
+  type Voucher,
 } from "@/lib/litdex";
 
 const WALLET_LIMIT = 2;
@@ -33,6 +38,7 @@ function formatCountdown(msLeft: number) {
 export function MintCard() {
   const { address, getSigner, correctNetwork } = useWallet();
   const { data: mintStatus, isLoading, refetch: refetchStatus } = useMintStatus();
+  const { data: voucherData, refetch: refetchVouchers } = useVouchers();
   const refreshAll = useRefreshAll();
   const [status, setStatus] = useState<string | null>(null);
   const [mintedId, setMintedId] = useState<bigint | null>(null);
@@ -106,6 +112,44 @@ export function MintCard() {
     }
   }
 
+  async function handleVoucherMint(voucher: Voucher) {
+    if (!address || price === null) return;
+    const cost = discountedPrice(price, voucher.discountBps);
+    try {
+      const allowance = await usdtRead().allowance(address, NFT_ADDRESS);
+      const signer = await getSigner();
+      if (allowance < cost) {
+        setStatus("Approving…");
+        const approveTx = await usdtContract(signer).approve(NFT_ADDRESS, cost);
+        await approveTx.wait();
+      }
+      setStatus("Minting…");
+      const tx = await nftContract(signer).mintWithVoucher(
+        [
+          voucherCategoryId(voucher.category),
+          voucher.wallet,
+          voucher.discountBps,
+          voucher.nonce,
+        ],
+        voucher.signature,
+      );
+      await tx.wait();
+      try {
+        const next = await nftRead().nextTokenId();
+        if (next > 1n) setMintedId(next - 1n);
+      } catch {
+        // artwork is optional
+      }
+      await refreshAll();
+      await Promise.all([refetchStatus(), refetchVouchers()]);
+      toast.success(`${voucher.category} minted with ${discountLabel(voucher.discountBps)} off`);
+    } catch (err) {
+      toast.error(parseWalletError(err, "Voucher mint failed, try again."));
+    } finally {
+      setStatus(null);
+    }
+  }
+
   return (
     <div
       id="mint"
@@ -160,7 +204,7 @@ export function MintCard() {
       <div className="flex flex-col p-2 md:p-4">
         <h3 className="btn-heading heading-ul text-black">Mint a champion</h3>
         <p className="btn-text mt-2 text-black/50">
-          Common rarity to start · Base Sepolia
+          Common rarity to start · Base Mainnet
         </p>
 
         <div className="mt-6">
@@ -181,6 +225,42 @@ export function MintCard() {
             />
           </div>
         </div>
+
+        {voucherData && voucherData.totalVouchers > 0 && (
+          <div className="mt-6 rounded-[1.25rem] border-2 border-[#0038FF]/20 bg-white p-4 md:p-5">
+            <p className="inline-flex items-center gap-2 rounded-full bg-[#CCFF00] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wide text-black">
+              Whitelist eligible — {voucherData.totalVouchers} discounted mint
+              {voucherData.totalVouchers === 1 ? "" : "s"} available
+            </p>
+            <div className="mt-4 flex flex-col gap-2">
+              {voucherData.vouchers.map((voucher) => (
+                <div
+                  key={`${voucher.category}-${voucher.nonce}`}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-[1rem] bg-[#F4F4F2] px-4 py-3"
+                >
+                  <div>
+                    <p className="btn-text text-sm font-bold uppercase text-black">
+                      {voucher.category}
+                    </p>
+                    <p className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-wide text-[#0038FF]">
+                      {discountLabel(voucher.discountBps)} off
+                      {price !== null
+                        ? ` · $${formatUsdt(discountedPrice(price, voucher.discountBps))} USDT`
+                        : ""}
+                    </p>
+                  </div>
+                  <button
+                    disabled={!address || !correctNetwork || busy || price === null}
+                    onClick={() => void handleVoucherMint(voucher)}
+                    className="btn fx-9 btn-pill btn-blue"
+                  >
+                    <span className="btn-label">Mint</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="mt-6 rounded-[1.25rem] bg-white p-4 md:p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
