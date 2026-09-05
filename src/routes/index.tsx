@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const { address, correctNetwork, switchNetwork, connect } = useWallet();
+  const { address, correctNetwork, switchNetwork } = useWallet();
 
   const scrollToMint = () =>
     document.getElementById("mint")?.scrollIntoView({ behavior: "smooth", block: "center" });
