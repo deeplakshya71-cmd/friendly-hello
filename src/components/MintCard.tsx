@@ -226,6 +226,42 @@ export function MintCard() {
           </div>
         </div>
 
+        {voucherData && voucherData.totalVouchers > 0 && (
+          <div className="mt-6 rounded-[1.25rem] border-2 border-[#0038FF]/20 bg-white p-4 md:p-5">
+            <p className="inline-flex items-center gap-2 rounded-full bg-[#CCFF00] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wide text-black">
+              Whitelist eligible — {voucherData.totalVouchers} discounted mint
+              {voucherData.totalVouchers === 1 ? "" : "s"} available
+            </p>
+            <div className="mt-4 flex flex-col gap-2">
+              {voucherData.vouchers.map((voucher) => (
+                <div
+                  key={`${voucher.category}-${voucher.nonce}`}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-[1rem] bg-[#F4F4F2] px-4 py-3"
+                >
+                  <div>
+                    <p className="btn-text text-sm font-bold uppercase text-black">
+                      {voucher.category}
+                    </p>
+                    <p className="mt-0.5 font-mono text-[11px] font-bold uppercase tracking-wide text-[#0038FF]">
+                      {discountLabel(voucher.discountBps)} off
+                      {price !== null
+                        ? ` · $${formatUsdt(discountedPrice(price, voucher.discountBps))} USDT`
+                        : ""}
+                    </p>
+                  </div>
+                  <button
+                    disabled={!address || !correctNetwork || busy || price === null}
+                    onClick={() => void handleVoucherMint(voucher)}
+                    className="btn fx-9 btn-pill btn-blue"
+                  >
+                    <span className="btn-label">Mint</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="mt-6 rounded-[1.25rem] bg-white p-4 md:p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
