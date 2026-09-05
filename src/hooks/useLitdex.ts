@@ -4,18 +4,21 @@ import { useCallback } from "react";
 import { useWallet } from "./useWallet";
 import {
   API_BASE,
+  BASE_CHAIN_ID,
+  BASE_RPC_URL,
   CONFIG_GAMES_REQUIRED,
   CONFIG_REPAIR_COST,
   nftContract,
   pointsContract,
   usdtContract,
   type OwnedNft,
+  type VoucherResponse,
 } from "@/lib/litdex";
 
-const READ_RPC = "https://sepolia.base.org";
+const READ_RPC = BASE_RPC_URL;
 
 export function readProvider() {
-  return new ethers.JsonRpcProvider(READ_RPC, 84532, { staticNetwork: true });
+  return new ethers.JsonRpcProvider(READ_RPC, BASE_CHAIN_ID, { staticNetwork: true });
 }
 
 export const nftRead = () => nftContract(readProvider());
@@ -69,6 +72,22 @@ export function useMintStatus() {
       const res = await fetch(`${API_BASE}/mint-status/${address}`);
       const json = (await res.json()) as MintStatus & { error?: string };
       if (!res.ok || json.error) throw new Error(json.error ?? "mint status failed");
+      return json;
+    },
+  });
+}
+
+export function useVouchers() {
+  const { address } = useWallet();
+  return useQuery({
+    queryKey: ["vouchers", address],
+    enabled: !!address,
+    refetchInterval: 30000,
+    retry: false,
+    queryFn: async (): Promise<VoucherResponse> => {
+      const res = await fetch(`${API_BASE}/whitelist/vouchers/${address}`);
+      const json = (await res.json()) as VoucherResponse & { error?: string };
+      if (!res.ok || json.error) throw new Error(json.error ?? "voucher fetch failed");
       return json;
     },
   });
